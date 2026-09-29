@@ -21,7 +21,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 시작과 재개
 
-1. [문서 지도](../../docs/README.md)를 먼저 읽고 [프로젝트 지도](../../docs/project-map.md)로 대상 업무 루트와 모듈을 확인한다. 현재 디렉터리가 플러그인이어도 업무 프로젝트와 혼동하지 않는다.
+1. [문서 지도](../../docs/README.md)를 먼저 읽고 [프로젝트 지도](../../docs/foundation/project-map.md)로 대상 업무 루트와 모듈을 확인한다. 현재 디렉터리가 플러그인이어도 업무 프로젝트와 혼동하지 않는다.
 2. 대상 프로젝트의 CLAUDE.md와 적용되는 .claude/rules를 확인한다. [진행 기록 규칙](references/progress.md)에 따라 기존 작업을 재개하거나 결과 폴더를 만든다.
 3. [문서 적용 확인표](references/doc-coverage.md)로 필요한 원문과 참고 소스를 골라 읽는다. 모든 문서를 일괄로 읽지 않는다.
 4. 문서와 실제 코드가 다르면 실제 코드의 기존 컨벤션을 우선하고 차이를 짧게 기록한다.
@@ -55,7 +55,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 실제 템플릿은 승인된 프로토타입의 배치·디자인을 기준으로 참고 화면과 같은 레이아웃·fragment 구조·공통 함수·자료사전 조회로 작성한다. 프로토타입의 샘플 데이터·확인용 스크립트는 옮기지 않는다.
 
-자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/common/portal/temporary-display-values.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다.
+자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다.
 
 기능·흐름·API 계약·DB 구조의 중대한 변경이 필요하면 해당 단계만 재승인받는다. 운영 반영·배포·커밋은 요청이 있을 때만 한다.
 
@@ -76,6 +76,6 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 | 코드사전 | `/admin/codes/save` | 카테고리 / 이름(API·DB 식별값) / 언어별 값 / 순서 / 사용 여부 Y |
 | 설정 | `/admin/configurations/save` | 카테고리 / 이름 / 값 / 설명 |
 
-- 등록 후 Admin 캐시 초기화(`/admin/settings/refreshCacheButton`)와 화면 재로드가 필요하다([캐시 반영](../../docs/system/flows/display-value-cache.md)).
-- 임시값을 넣은 곳은 `[임시값]` 표식 위치와 전환 방법(임시값 삭제, 아래 주석 해제)을 함께 적는다([등록 안내 형식](../../docs/common/portal/temporary-display-values.md)).
-- User 화면의 메뉴·사전 관리 경로는 대상 환경에서 확인해 안내한다([User 등록 가이드](../../docs/modules/user/display-value-registration.md)).
+- 등록 후 Admin 캐시 초기화(`/admin/settings/refreshCacheButton`)와 화면 재로드가 필요하다([캐시 반영](../../docs/cases/display-value/cache-refresh.md)).
+- 임시값을 넣은 곳은 `[임시값]` 표식 위치와 전환 방법(임시값 삭제, 아래 주석 해제)을 함께 적는다([등록 안내 형식](../../docs/cases/display-value/temporary-value.md)).
+- User 화면의 메뉴·사전 관리 경로는 대상 환경에서 확인해 안내한다([User 등록 가이드](../../docs/cases/display-value/registration-user.md)).
