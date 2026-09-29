@@ -11,7 +11,7 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 
 ## 기준
 
-1. [문서 지도](../../docs/README.md)에서 대상 모듈의 frontend 기준(Admin/User), [참고 화면](../../docs/reference/screen-references.md), 해당 화면 유형 문서(목록·팝업 등)만 골라 읽는다.
+1. [docs 라우터](../../docs/README.md)의 케이스 트리거 표에서 `cases/screen/`의 해당 화면 유형 문서(목록·팝업·조회 조각 등)만 고른다. 대상 모듈 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md))과 [참고 화면](../../docs/reference/screen-references.md)을 함께 읽는다. 표·엑셀 버튼 등 배치에 영향을 주는 케이스가 있으면 해당 문서의 배치 관련 부분만 확인한다.
 2. 같은 모듈·유형의 참고 화면 소스를 열어 레이아웃 구조, CSS 클래스, 검색·버튼·표 배치를 확인한다.
 3. 결과 위치는 [진행 기록 규칙](../develop-screen-feature/references/progress.md)의 작업 폴더다. 플러그인에 작업 결과를 쓰지 않는다.
 

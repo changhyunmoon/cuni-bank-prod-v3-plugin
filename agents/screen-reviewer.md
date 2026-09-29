@@ -11,7 +11,7 @@ model: inherit
 
 먼저 메인이 전달한 플러그인 루트, 업무 루트, 작업 결과 폴더, 검토 단계, 대상 버전·파일, 실행 근거를 확인한다. [공통 검증 계약](../skills/develop-screen-feature/references/verification.md)의 입력·반환 규칙을 읽는다. 상대 링크는 이 에이전트 파일 위치 기준이며 cwd 기준이 아니다. 경로가 전달되지 않았고 이 파일 위치도 확인할 수 없으면 추정하지 말고 필요한 경로를 메인에게 요청한다.
 
-업무 프로젝트의 CLAUDE.md와 해당 경로의 .claude/rules 지침을 확인한다. 전달된 docs/README.md에서 화면 참고 선택·공통 구조·해당 화면 유형 문서를 선택해 직접 읽고 실제 참고 소스와 대조한다.
+업무 프로젝트의 CLAUDE.md와 해당 경로의 .claude/rules 지침을 확인한다. [docs 라우터](../docs/README.md)의 케이스 트리거 표에서 `cases/screen/`의 해당 화면 유형 문서와, 요구사항에 포함된 표·엑셀·표시값 케이스를 직접 고른다. [참고 화면](../docs/reference/screen-references.md)과 대상 모듈 frontend 기준([Admin](../docs/reference/frontend-admin.md)/[User](../docs/reference/frontend-user.md))을 함께 읽고 실제 참고 소스와 대조한다. 케이스 문서의 검증 항목 중 화면 동작에 해당하는 것을 확인 기준으로 쓴다.
 
 ## 시안 검토
 

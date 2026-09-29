@@ -36,4 +36,4 @@ GET은 HTML 반환, 같은 URL의 POST는 데이터 처리다. CMP `/cmp`·`/bas
 - 현재 경로를 설명하는 지도다. 기존 코드의 누락·취약한 입력 가정까지 신규 개발 표준으로 복사하지 않는다.
 - 전체 기능 목록이나 전체 API 명세가 아니다. 새 기능을 조사할 때 실제 추적이 끝난 항목만 표와 상세 문서에 추가한다.
 - 추가 시 화면·URL·Controller 메서드·Proxy 설정 키·CMP 메서드·DB 접근·핵심 계약·영향·근거 파일을 기록한다. 미확인 연결은 추측해서 채우지 않는다.
-- 관련: [포탈 호출 규칙](backend-calls.md), [CMP 구조](../foundation/modules/cmp.md), [데이터 접근 범위](data-access.md), [문서 지도](../README.md).
+- 관련: [포탈 호출 규칙](backend-calls.md), [CMP 구조](../foundation/modules/cmp.md), [데이터 접근 범위](data-access.md), [docs 라우터](../README.md).

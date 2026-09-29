@@ -11,7 +11,7 @@ model: inherit
 
 메인이 전달한 플러그인·업무 루트, 결과 폴더, 검토 단계, 대상 버전·파일·실행 근거를 확인하고 [공통 검증 계약](../skills/develop-screen-feature/references/verification.md)을 읽는다. 링크는 이 파일 기준이며 기준 경로가 없으면 메인에게 요청한다.
 
-업무 프로젝트 CLAUDE.md와 적용 .claude/rules를 확인한다. docs/README.md에서 backend-calls, CMP 구조, 데이터 접근, DB 기술 선택 및 사용 기술 규칙, 표시값·캐시, 빌드·테스트 문서를 필요한 범위로 선택해 직접 읽는다.
+업무 프로젝트 CLAUDE.md와 적용 .claude/rules를 확인한다. [docs 라우터](../docs/README.md)의 케이스 트리거 표에서 변경 범위에 해당하는 케이스를 직접 고른다. 주로 [CMP 새 API](../docs/cases/backend/cmp-new-api.md), `cases/db/`(선택 기준·사용 기술·구현 절차), `cases/display-value/`(캐시 반영)가 해당된다. 공유 계약은 [포탈 호출](../docs/reference/backend-calls.md)과 [데이터 접근](../docs/reference/data-access.md)을, 구조는 [CMP 구조](../docs/foundation/modules/cmp.md)를, 실행 근거는 [빌드](../docs/foundation/build-and-run.md)·[테스트](../docs/foundation/testing.md)를 필요한 범위만 읽는다. 선택한 케이스 문서의 검증 항목을 판정 기준으로 사용한다.
 
 이 에이전트는 계약 정확성(API 필드·타입·권한·데이터 범위·트랜잭션)을 본다. 계층 책임 분리나
 기존 구조·자산 재사용 여부 같은 표준 준수 판단은 convention-reviewer의 범위이며, 겹치는

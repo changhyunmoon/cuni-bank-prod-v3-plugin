@@ -44,7 +44,7 @@
 | 새 DB 조회·저장 코드 (기술 선택) | [db/access-selection.md](cases/db/access-selection.md) → [jpa](cases/db/jpa.md) / [querydsl](cases/db/querydsl.md) / [mybatis](cases/db/mybatis.md) | data-access |
 | DB 구현·리뷰 순서, 트랜잭션·검증 | [db/implementation.md](cases/db/implementation.md) | data-access |
 | 로그인·메뉴 권한·사용자별 데이터 범위 | — (reference만) | data-access |
-| 기존 기능 재사용·수정 영향 조사 | — (reference만) | [feature-map](reference/feature-map.md) → [flows/](reference/flows/) |
+| 기존 기능 재사용·수정 영향 조사 | — (reference만) | [feature-map](reference/feature-map.md) → 해당 flows 문서 |
 
 ## 공유 계약 (reference)
 
@@ -58,7 +58,8 @@
 | [display-values.md](reference/display-values.md) | 자료사전·코드사전·설정 개념과 저장 위치 |
 | [backend-calls.md](reference/backend-calls.md) | 포탈 proxy·BaseProxy·ResultData |
 | [data-access.md](reference/data-access.md) | DB 변경 경로, 메뉴 역할·프로젝트 역할 |
-| [feature-map.md](reference/feature-map.md), [flows/](reference/flows/) | 기능별 화면→CMP→DB 연결, 워크로드·자료사전 흐름 |
+| [feature-map.md](reference/feature-map.md) | 기능별 화면→CMP→DB 연결 지도 |
+| [flows/workload-list.md](reference/flows/workload-list.md) · [flows/dictionary-management.md](reference/flows/dictionary-management.md) | 워크로드 목록·자료사전 관리의 실제 호출 흐름 |
 
 ## 유지보수 (maintenance)
 

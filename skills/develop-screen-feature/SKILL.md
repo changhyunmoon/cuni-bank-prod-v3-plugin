@@ -21,14 +21,14 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 시작과 재개
 
-1. [문서 지도](../../docs/README.md)를 먼저 읽고 [프로젝트 지도](../../docs/foundation/project-map.md)로 대상 업무 루트와 모듈을 확인한다. 현재 디렉터리가 플러그인이어도 업무 프로젝트와 혼동하지 않는다.
+1. [docs 라우터](../../docs/README.md)를 먼저 읽는다. 뼈대 중 [프로젝트 지도](../../docs/foundation/project-map.md)로 대상 업무 루트와 모듈을 확인하고, [코딩 규칙 우선순위](../../docs/foundation/coding-rules.md)를 확인한다. 현재 디렉터리가 플러그인이어도 업무 프로젝트와 혼동하지 않는다.
 2. 대상 프로젝트의 CLAUDE.md와 적용되는 .claude/rules를 확인한다. [진행 기록 규칙](references/progress.md)에 따라 기존 작업을 재개하거나 결과 폴더를 만든다.
-3. [문서 적용 확인표](references/doc-coverage.md)로 필요한 원문과 참고 소스를 골라 읽는다. 모든 문서를 일괄로 읽지 않는다.
+3. 라우터의 케이스 트리거 표에서 요청에 해당하는 케이스 문서를 모두 고르고, [케이스 선택·기록 규칙](references/doc-coverage.md)대로 단계마다 확인·기록한다. 모든 문서를 일괄로 읽지 않는다.
 4. 문서와 실제 코드가 다르면 실제 코드의 기존 컨벤션을 우선하고 차이를 짧게 기록한다.
 
 ## 1. 요구사항 구체화
 
-대상 모듈의 frontend 기준과 참고 화면, 관련 기존 화면·API를 확인해 요청을 실현 가능한 형태로 정리한다.
+대상 모듈의 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md))과 [참고 화면](../../docs/reference/screen-references.md), 관련 기존 화면·API([기능별 연결 지도](../../docs/reference/feature-map.md))를 확인해 요청을 실현 가능한 형태로 정리한다. 엑셀 내려받기처럼 케이스 문서가 데이터 범위를 정하는 기능은 그 기준을 요구사항의 완료 조건에 반영한다.
 
 `requirements.md`에 대상 모듈·화면 URL, 요청한 검색·열·버튼·동작, 요구사항 ID(R-01…)와 완료 조건, 제외 범위, 사용자가 정해야 할 사항만 짧게 쓴다. 요청을 해석하며 채운 부분과 제안은 구분해 표시한다.
 
@@ -40,7 +40,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 3. 구현 설계
 
-참고할 기존 기능(같은 유형의 화면 → 포탈 Controller → Proxy → CMP Controller/Service/Support)을 먼저 찾고, 그 구조를 그대로 복제하는 설계를 만든다. 문서는 backend-calls, CMP API 작성 규칙, DB 기술 선택, 데이터 접근 중 필요한 것만 읽는다.
+참고할 기존 기능(같은 유형의 화면 → 포탈 Controller → Proxy → CMP Controller/Service/Support)을 먼저 찾고, 그 구조를 그대로 복제하는 설계를 만든다. 문서는 선택한 케이스 중 [포탈 호출](../../docs/reference/backend-calls.md), [CMP 새 API](../../docs/cases/backend/cmp-new-api.md), [DB 기술 선택](../../docs/cases/db/access-selection.md), [데이터 접근](../../docs/reference/data-access.md)에서 필요한 것만 읽는다.
 
 `implementation-plan.md`에 다음만 쓴다.
 
@@ -53,7 +53,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 4. 구현
 
-승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 실제 템플릿은 승인된 프로토타입의 배치·디자인을 기준으로 참고 화면과 같은 레이아웃·fragment 구조·공통 함수·자료사전 조회로 작성한다. 프로토타입의 샘플 데이터·확인용 스크립트는 옮기지 않는다.
+승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 선택한 케이스 문서의 구현 순서와 "복사하지 않을 기존 패턴"을 따른다. 실제 템플릿은 승인된 프로토타입의 배치·디자인을 기준으로 참고 화면과 같은 레이아웃·fragment 구조·공통 함수·자료사전 조회로 작성한다. 프로토타입의 샘플 데이터·확인용 스크립트는 옮기지 않는다.
 
 자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다.
 
@@ -61,7 +61,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 5. 검증과 완료
 
-[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다.
+[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목을 하나씩 결과로 남긴다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다.
 
 완료 보고는 변경 파일, 검증 결과, 그리고 아래 **등록 안내**로 구성한다. 등록 안내는 항상 제공한다.
 

@@ -11,9 +11,9 @@ model: inherit
 
 메인이 전달한 플러그인·업무 루트, 결과 폴더, 검토 단계, 대상 버전·파일을 확인하고 [공통 검증 계약](../skills/develop-screen-feature/references/verification.md)을 읽는다. 링크는 이 파일 기준으로 해석한다. 기준 경로가 없으면 메인에게 요청하고 임의 프로젝트를 검사하지 않는다.
 
-업무 프로젝트의 CLAUDE.md와 적용되는 .claude/rules를 확인한다. docs/README.md에서 검토 범위에 필요한 문서를 직접 선택한다. 메인이 적은 적용 기준 표만 읽고 준수 여부를 판정하지 않는다.
+업무 프로젝트의 CLAUDE.md와 적용되는 .claude/rules를 확인한다. [docs 라우터](../docs/README.md)의 케이스 트리거 표에서 요구사항과 변경 파일에 해당하는 케이스 문서를 직접 고른다. 우선순위 판단은 [코딩 규칙 우선순위](../docs/foundation/coding-rules.md)를 따르고, 케이스 문서의 "복사하지 않을 기존 패턴"과 검증 항목을 판정 기준으로 쓴다. 메인이 적은 적용 기준 표만 읽고 준수 여부를 판정하지 않는다.
 
-[문서 적용 확인표](../skills/develop-screen-feature/references/doc-coverage.md)를 기준으로 문서 선택 자체의 누락도 검사한다. 모든 관련 행의 적용/해당 없음/확인 불가와 이유가 타당한지 실제 변경 범위와 대조한다. standalone-prototype/skill-evaluation의 승인 부재를 결함으로 삼지 않는다. snapshot 이후 변경된 자료의 이전 검토 결과를 통과로 재사용하지 않는다.
+[케이스 선택·기록 규칙](../skills/develop-screen-feature/references/doc-coverage.md)에 따라 케이스 선택 자체의 누락도 검사한다. 선택한 모든 케이스의 적용/해당 없음/확인 불가와 이유가 타당한지 실제 변경 범위와 대조한다. standalone-prototype/skill-evaluation의 승인 부재를 결함으로 삼지 않는다. snapshot 이후 변경된 자료의 이전 검토 결과를 통과로 재사용하지 않는다.
 
 ## 확인 범위
 
