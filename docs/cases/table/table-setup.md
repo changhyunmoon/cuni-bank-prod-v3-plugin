@@ -1,6 +1,8 @@
 # 테이블 유형별 DataTables 함수 선택
 
 > 범위: Admin·User | 상태: 소스 대조 완료, 실행 미검증 | 근거: 양 모듈 `src/main/resources/static/js/datatables/datatables.ex.js`
+>
+> 언제 읽나: 새 DataTables 표를 만들거나 표의 데이터 출처(서버·로컬)를 바꿀 때 | 읽지 않는 경우: 기존 표의 재조회·선택·행 조작만 바꿀 때(→ table-row-operations.md)
 
 테이블은 데이터 소유 위치와 API 요청 형태로 생성 함수를 선택한다. 함수 이름이나 주석만으로 페이징·정렬 동작을 판단하지 않는다.
 

@@ -1,6 +1,8 @@
 # CMP 새 REST API 작성 규칙
 
 > 범위: cmp 신규 Controller·Service 작성 | 상태: 코드 확인, 실행 미검증 | 근거: 아래 소스
+>
+> 언제 읽나: cmp에 새 REST API(Controller·Service)를 추가하거나 기존 API 계약을 바꿀 때 | 읽지 않는 경우: 포탈에서 기존 API 호출만 추가할 때(→ reference/backend-calls.md)
 
 `Controller(ApiController<S> 상속) → Service(ApiService<Entity,Pk,Support> 상속) → Repository/Support`의 구조를 따른다.
 

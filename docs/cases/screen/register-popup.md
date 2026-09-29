@@ -1,6 +1,8 @@
 # 등록 팝업과 업로드 미리보기
 
 > 범위: Admin 팝업 | 근거: monitoring/vmManagerManagement/bluksave.html
+>
+> 언제 읽나: 등록·수정 팝업, 파일 업로드·미리보기 팝업을 만들 때 | 읽지 않는 경우: Admin 작업 위저드·진행 조회 팝업(→ reference/frontend-admin.md)
 
 파일을 고르는 동작, 내용을 미리 보는 동작, 최종 저장을 구분한다.
 

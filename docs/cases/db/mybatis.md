@@ -1,6 +1,8 @@
 # MyBatis로 SQL 중심 처리하기
 
 > 범위: cmp·batch·interface | 성격: 기존 패턴 + 신규 작성 기준
+>
+> 언제 읽나: 집계·DB 함수·일괄 처리를 DAO·Mapper와 XML로 구현할 때 | 읽지 않는 경우: 엔티티 기본 CRUD(→ jpa.md)
 
 복잡한 집계나 SQL 중심 일괄 처리는 기존 DAO·Mapper와 XML 매퍼를 확장한다.
 

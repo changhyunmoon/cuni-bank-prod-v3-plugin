@@ -1,6 +1,8 @@
 # 값 저장 후 캐시 반영
 
 > 범위: Admin·CMP 저장/조회, 포탈 캐시 갱신 | 상태: 코드 확인, 실행 미검증 | 근거: 아래 소스
+>
+> 언제 읽나: 등록·수정한 사전·설정 값이 화면에 반영되지 않을 때, 저장 후 캐시 갱신 경로를 확인할 때 | 읽지 않는 경우: 최초 등록 절차만 필요할 때
 
 1. Admin 관리 화면 → Admin Controller → Proxy Client → CMP API·Service → DB에 저장한다.
 2. 성공한 저장 요청의 Admin 인스턴스는 해당 Dictionary·Code·Configuration 캐시를 제거한다.

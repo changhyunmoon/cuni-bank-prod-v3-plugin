@@ -1,6 +1,8 @@
 # 부모 화면에 넣는 조회 조각
 
 > 범위: 서비스 요청의 변경·반납 내용 표시 | 근거: K8sProjectEditView.html, Admin K8sProjectRemoveView.html
+>
+> 언제 읽나: 부모 화면 안에 삽입되는 읽기 전용 조회 조각(loadComponent)을 만들 때 | 읽지 않는 경우: User 입력 조각(validComponent·componoentData → reference/frontend-user.md)
 
 이 파일들은 독립 등록 화면이 아니라 부모 화면 안에 표시되는 읽기 전용 조각이다.
 

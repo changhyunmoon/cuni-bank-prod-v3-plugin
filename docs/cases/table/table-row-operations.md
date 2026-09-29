@@ -1,6 +1,8 @@
 # DataTables 재조회·선택·행 조작 가이드
 
 > 범위: Admin·User | 상태: 소스 대조 완료, 실행 미검증 | 근거: 양 모듈 `src/main/resources/static/js/datatables/datatables.ex.js`
+>
+> 언제 읽나: 표 재조회·페이지 유지·행 선택·행 추가·전체 선택을 구현할 때 | 읽지 않는 경우: 표 생성 함수를 고를 때(→ table-setup.md)
 
 서버 표는 재조회하고 로컬 표는 행 데이터를 바꾼다. 모든 조작에는 실제 표 ID를 전달하는 것을 기본으로 한다.
 
