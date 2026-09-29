@@ -1,0 +1,15 @@
+{
+  "name": "cuni-bank-v3-prod-plugin-v3-marketplace",
+  "owner": {
+    "name": "changhyunmoon1999",
+    "email": "changhyunmoon1999@gmail.com"
+  },
+  "description": "cuni-bank-v3-prod 개발 플러그인(v3) 로컬 마켓플레이스.",
+  "plugins": [
+    {
+      "name": "cuni-bank-v3-prod-plugin-v3",
+      "source": "./",
+      "description": "CUNi 개발 표준 기반 화면·백엔드 개발 스킬과 독립 검증 에이전트"
+    }
+  ]
+}
