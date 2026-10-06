@@ -9,6 +9,7 @@ CUNi 개발 표준을 따르는 화면·백엔드 개발 스킬과 독립 검증
 | 스킬 | `develop-screen-feature` | 요구사항 → HTML 시안 → 구현 설계 승인 후 CMP 백엔드까지 구현 |
 | 스킬 | `prototype-screen` | 서버 연동 없이 배치·디자인만 확인하는 `prototype.html` 한 파일 작성 |
 | 스킬 | `update-docs` | 텍스트 자료·업무 코드에서 필요한 정보를 추출해 반영 계획 승인 후 플러그인 docs 갱신 |
+| 스킬 | `update-plugin` | 설치된 플러그인을 최신 버전으로 수동 업데이트 (직접 호출할 때만 실행) |
 | 에이전트 | `screen-reviewer` | 요구사항 누락, 승인 화면과의 차이, 사용자 흐름 검토 (읽기 전용) |
 | 에이전트 | `convention-reviewer` | docs 개발 표준·기존 구조 준수 검토 (읽기 전용) |
 | 에이전트 | `backend-reviewer` | CMP API 계약·권한·데이터 접근·트랜잭션 검토 (읽기 전용) |
@@ -101,7 +102,7 @@ claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3
 업무 루트에서 Claude Code를 열고 확인한다.
 
 1. `/plugin`의 설치 목록에 `cuni-bank-v3-prod-plugin-v3`가 활성 상태로 보인다.
-2. `/`를 입력하면 `/cuni-bank-v3-prod-plugin-v3:develop-screen-feature`, `/cuni-bank-v3-prod-plugin-v3:prototype-screen`, `/cuni-bank-v3-prod-plugin-v3:update-docs`가 보인다.
+2. `/`를 입력하면 `/cuni-bank-v3-prod-plugin-v3:develop-screen-feature`, `/cuni-bank-v3-prod-plugin-v3:prototype-screen`, `/cuni-bank-v3-prod-plugin-v3:update-docs`, `/cuni-bank-v3-prod-plugin-v3:update-plugin`이 보인다.
 3. `/agents` 목록에 `screen-reviewer`, `convention-reviewer`, `backend-reviewer`, `doc-extractor`가 보인다.
 
 ## 사용
@@ -135,6 +136,14 @@ claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3
 추출 → 반영 계획 표(충돌·제외 목록 포함) 승인 → 문서 수정 → 링크·라우터 검사 순으로 진행한다. 스크립트 실행에 Node.js가 필요하다. 반영한 docs 변경은 플러그인 저장소에서 커밋한다.
 
 ## 업데이트와 제거
+
+업무 루트의 Claude Code에서 다음을 실행하면 설치 방식을 판별해 최신 버전으로 업데이트한다. 로컬 변경·갈라진 커밋이 있으면 아무것도 바꾸지 않고 해결 방법을 알려준다. 끝나면 Claude Code를 재시작한다.
+
+```text
+/cuni-bank-v3-prod-plugin-v3:update-plugin
+```
+
+직접 하려면 다음을 실행한다.
 
 ```text
 /plugin marketplace update cuni-bank-v3-prod-plugin-v3-marketplace

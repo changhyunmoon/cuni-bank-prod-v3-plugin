@@ -1,6 +1,6 @@
 {
   "name": "cuni-bank-v3-prod-plugin-v3",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "CUNi 개발 표준 기반 화면·백엔드 개발 스킬과 독립 검증 에이전트",
   "author": { "name": "Local developer" }
 }
