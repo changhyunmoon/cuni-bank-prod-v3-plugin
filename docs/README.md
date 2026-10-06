@@ -65,6 +65,7 @@
 
 - [document-rules.md](maintenance/document-rules.md): 분석 자료 반영, 문서 분류(뼈대·케이스·reference) 기준
 - [source-baseline.md](maintenance/source-baseline.md): 문서 검증 시점의 커밋·범위·미검증 사항
+- 텍스트 자료나 업무 코드에서 정보를 추출해 docs에 반영할 때는 [update-docs 스킬](../skills/update-docs/SKILL.md)을 쓴다.
 
 ## 라우터 유지 규칙
 

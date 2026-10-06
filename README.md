@@ -8,9 +8,11 @@ CUNi 개발 표준을 따르는 화면·백엔드 개발 스킬과 독립 검증
 |---|---|---|
 | 스킬 | `develop-screen-feature` | 요구사항 → HTML 시안 → 구현 설계 승인 후 CMP 백엔드까지 구현 |
 | 스킬 | `prototype-screen` | 서버 연동 없이 배치·디자인만 확인하는 `prototype.html` 한 파일 작성 |
+| 스킬 | `update-docs` | 텍스트 자료·업무 코드에서 필요한 정보를 추출해 반영 계획 승인 후 플러그인 docs 갱신 |
 | 에이전트 | `screen-reviewer` | 요구사항 누락, 승인 화면과의 차이, 사용자 흐름 검토 (읽기 전용) |
 | 에이전트 | `convention-reviewer` | docs 개발 표준·기존 구조 준수 검토 (읽기 전용) |
 | 에이전트 | `backend-reviewer` | CMP API 계약·권한·데이터 접근·트랜잭션 검토 (읽기 전용) |
+| 에이전트 | `doc-extractor` | `update-docs`가 긴 입력을 나눠 맡기는 정보 추출 (읽기 전용) |
 
 | 항목 | 값 |
 |---|---|
@@ -99,8 +101,8 @@ claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3
 업무 루트에서 Claude Code를 열고 확인한다.
 
 1. `/plugin`의 설치 목록에 `cuni-bank-v3-prod-plugin-v3`가 활성 상태로 보인다.
-2. `/`를 입력하면 `/cuni-bank-v3-prod-plugin-v3:develop-screen-feature`, `/cuni-bank-v3-prod-plugin-v3:prototype-screen`이 보인다.
-3. `/agents` 목록에 `screen-reviewer`, `convention-reviewer`, `backend-reviewer`가 보인다.
+2. `/`를 입력하면 `/cuni-bank-v3-prod-plugin-v3:develop-screen-feature`, `/cuni-bank-v3-prod-plugin-v3:prototype-screen`, `/cuni-bank-v3-prod-plugin-v3:update-docs`가 보인다.
+3. `/agents` 목록에 `screen-reviewer`, `convention-reviewer`, `backend-reviewer`, `doc-extractor`가 보인다.
 
 ## 사용
 
@@ -115,6 +117,22 @@ claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3
 
 - 작업 산출물(요구사항·시안·설계·검증 기록)은 플러그인이 아닌 업무 루트의 `outputs/<YYYYMMDD-feature-slug>/`에 저장된다. 기준은 [진행 기록 규칙](skills/develop-screen-feature/references/progress.md)을 본다.
 - 커밋은 변경한 하위 저장소(admin·cmp 등)에서 각각 한다.
+
+### docs 반영 (`update-docs`)
+
+`update-docs`는 플러그인의 `docs/`를 수정하므로 **플러그인 클론**을 `--plugin-dir`로 불러온 세션에서 쓴다. 설치 캐시에서 실행하면 반영 계획 표까지만 제시한다. 실행 방식은 스킬이 시작할 때 자동으로 판별한다.
+
+| 방식 | 실행 | 업무 코드 |
+|---|---|---|
+| A. 클론에서 실행 | `cd C:/workspace/cuni-bank-v3-prod-plugin-v3` 후 `claude --plugin-dir .` | 코드 추출 시 업무 루트 경로를 알려준다 |
+| B. 업무 루트에서 실행 | `cd C:/workspace/cuni-bank-v3-prod` 후 `claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3` | 현재 폴더를 업무 루트로 읽는다 |
+
+```text
+/cuni-bank-v3-prod-plugin-v3:update-docs <분석 문서 붙여넣기 또는 파일 경로>
+/cuni-bank-v3-prod-plugin-v3:update-docs cmp의 워크로드 목록 조회 API 구조를 컨벤션으로 정리해줘
+```
+
+추출 → 반영 계획 표(충돌·제외 목록 포함) 승인 → 문서 수정 → 링크·라우터 검사 순으로 진행한다. 스크립트 실행에 Node.js가 필요하다. 반영한 docs 변경은 플러그인 저장소에서 커밋한다.
 
 ## 업데이트와 제거
 
