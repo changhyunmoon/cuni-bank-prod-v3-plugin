@@ -18,11 +18,12 @@ Admin·User 화면은 다크/화이트 테마를 가진다. 테마는 레이아�
 - 테마 값은 코드사전 `Theme`으로 관리한다. 선택 목록은 `getCode("Theme")`로 만들고(`layout_admin.html:415-417`), 세션·쿠키에는 선택한 코드 키가 저장된다. `Dark`는 이 코드 키다.
 - 새 화면도 테마 목록·표시명을 하드코딩하지 않고 코드사전 `Theme`을 쓴다. 분기는 표시명이 아닌 코드 키 `Dark` 여부로만 한다. 화이트 쪽 키는 등록값을 확인하지 않았으므로 문자열로 가정하지 않는다.
 - 새 테마 값이 필요하면 화면에 추가하지 말고 코드사전 등록과 해당 `.dark` 같은 CSS 규칙 추가를 사용자에게 제안한다.
+- Admin 팝업(`layout_final/popup_layout`)은 메인 화면의 `static/css/*`가 아닌 `static/css_nh/*`(`style_final.css`)를 쓴다. 팝업 안 요소의 다크 모양은 이 파일 기준으로 확인한다([팝업 안 요소의 다크 테마](ui-components.md#팝업-안-요소의-다크-테마)).
 - 날짜 선택 창(`jquery.datetimepicker`)은 `.dark` 규칙이 없어 두 테마 모두 밝은 창으로 보인다. 기존 동작이므로 화면에서 따로 바꾸지 않는다.
 
 ## 화면 작성 규칙
 
-- [컴포넌트 표준](ui-components.md)의 클래스만 쓴다. 표준 클래스에는 `.dark` 규칙이 이미 있다.
+- [컴포넌트 표준](ui-components.md)의 클래스만 쓴다. 표준 클래스에는 `.dark` 규칙이 이미 있다. 단, 같은 클래스라도 놓인 위치에 따라 다크 규칙이 없을 수 있다(예: 팝업 `tbl-type2` 안의 input·textarea는 다크에서도 흰 칸). 표준의 위치·조합을 그대로 쓴다.
 - 글자색·배경색·테두리색을 인라인 style이나 화면 `<style>`로 지정하지 않는다. 한 테마에서만 맞는 색이 된다. 꼭 필요하면 사용자에게 제안하고, 승인되면 화이트 규칙과 `.dark` 규칙을 함께 둔다.
 - 차트 등 스크립트가 색을 정하는 화면은 `<input type="hidden" id="hdnSession" th:value="${session.admintheme}"/>`(User는 `session.usertheme`)를 두고 값이 `Dark`인지로 색을 고른다(`admin:static/js/d3-host.js:12-20`). 쿠키를 직접 읽는 방식(`d3-app.js:17`)은 새 화면에 쓰지 않는다.
 - 이미지·아이콘을 새로 쓰면 두 테마 배경에서 모두 보이는지 확인한다.

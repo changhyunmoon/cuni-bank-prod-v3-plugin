@@ -11,10 +11,12 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 
 ## 기준
 
-1. [docs 라우터](../../docs/README.md)의 케이스 트리거 표에서 `cases/screen/`의 해당 화면 유형 문서(목록·팝업·조회 조각 등)를 고른다. 대상 모듈 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md)), [참고 화면](../../docs/reference/screen-references.md), [컴포넌트 표준 마크업](../../docs/reference/ui-components.md), [테마](../../docs/reference/theme.md)를 함께 읽는다. 표·엑셀 등 해당 케이스가 있으면 그 문서도 읽는다.
+1. [docs 라우터](../../docs/README.md)의 케이스 트리거 표에서 `cases/screen/`의 해당 화면 유형 문서(목록·팝업·조회 조각 등)를 고른다. 대상 모듈 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md)), [참고 화면](../../docs/reference/screen-references.md), [컴포넌트 표준 마크업](../../docs/reference/ui-components.md), [테마](../../docs/reference/theme.md), [기존 화면과 일관성 맞추기](../../docs/cases/screen/consistency-check.md)를 함께 읽는다. 표·엑셀 등 해당 케이스가 있으면 그 문서도 읽는다.
 2. 같은 모듈·유형의 참고 화면 소스와 대상 모듈의 레이아웃 파일(`layout_final/layout_admin.html` / `layout_user.html`), `static/js/datatables/datatables.ex.js`, `static/js/common.js`를 연다.
 3. 결과 위치는 [진행 기록 규칙](../develop-screen-feature/references/progress.md)의 작업 폴더다. 플러그인에 작업 결과를 쓰지 않는다.
 4. **디자인 기준 화면을 먼저 정한다.** 참고 화면과 별도로, 같은 모듈에서 이번 화면과 검색 줄·동작 버튼·표 구성이 가장 비슷한 기존 화면을 1~2개 고른다(예: 대상 선택 + 기간 + 검색 + 등록·내보내기 → Admin `monitoring/vmManagerManagement/list.html`). 고른 화면과 이유를 작성 전에 사용자에게 보여 확인받고 진행 기록에 남긴다. 이후 배치·간격·버튼은 이 화면과 같게 만들고, 실제 화면 비교도 이 화면과 한다.
+5. **요소별 근거 표를 먼저 만든다.** 작성 전에 만들 요소(검색 줄·기간·select·버튼·표·팝업·팝업 안 입력·빈 결과·알림)마다 복사할 근거 파일:줄을 [일관성 맞추기](../../docs/cases/screen/consistency-check.md#작성-순서)의 표 형식으로 진행 기록에 남긴다. 근거가 없는 요소는 만들기 전에 사용자에게 제안해 확정한다.
+6. **요청한 것만 만든다.** 요청에 없는 기능·옵션·기본값(기본 기간 등)·제한을 넣지 않는다. 필요해 보이면 "제안"으로 묻는다.
 
 ## 작성
 
@@ -26,13 +28,15 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 - 서버 없이 `file://`로 열리므로 `/`로 시작하는 절대 경로는 깨진다. 다음은 파일 안 `<style>`·`<script>`에서 보정한다.
   - DataTables 언어: 대상 모듈 `static/js/datatables/cultures/Korean.json`의 내용을 `language` 객체로 직접 넣는다.
   - 화면에 보이는 CSS 자원(폰트·아이콘)이 절대 경로라 빠지면 같은 선택자·font-family로 상대 경로를 다시 선언한다.
+- Thymeleaf가 주입하던 전역 변수는 `<script>`로 먼저 선언한다: `contextPath`(레이아웃), `confirmDicCache`·`errorDicCache` 등(`settings/dictionary_culture`). 빠지면 `common.js`·bootbox가 `ReferenceError`를 낸다. 팝업 문서(iframe)에도 똑같이 넣는다.
 - ajax·파일 로드는 쓰지 않는다(브라우저가 `file://`의 로컬 파일 요청을 막는다).
 - 파일 안 `<style>`에는 위 file:// 보정만 둔다. 화면 모양을 위한 CSS 규칙, `.dark` 규칙을 넣지 않는다. 그런 규칙이 필요해졌다면 표준 요소가 아닌 것을 만든 것이므로 표준 요소로 바꾼다.
 
 ### 레이아웃과 컴포넌트
 
 - 헤더·좌측 메뉴·경로 표시는 레이아웃 파일(`layout_admin.html`과 `fragments/header_admin`·`wrap_admin`·`footer_admin`)의 실제 마크업을 옮긴다. 경로 표시줄 오른쪽의 캐시 초기화·테마 select·세션 시간도 그대로 둔다. 메뉴 항목은 대상 메뉴가 보일 정도로 줄여도 된다.
-- 본문은 [컴포넌트 표준 마크업](../../docs/reference/ui-components.md)과 참고 화면의 구조·클래스만 쓴다. 검색 영역·기간·select·버튼·표·팝업·폼을 임의 마크업으로 만들지 않는다.
+- 본문은 근거 표에 적은 근거의 마크업을 그대로 복사하고 id·문구·옵션만 바꾼다. 검색 영역·기간·select·버튼·표·팝업·폼을 임의 마크업으로 만들지 않는다.
+- 모양이 어긋나거나 한 테마에서 색이 맞지 않으면 CSS를 더하지 말고 근거와 다른 마크업·위치를 썼는지 다시 대조한다. 한 줄에 안 들어가도 폭을 줄이지 말고 사용자와 정한다.
 - 목록 화면의 검색 줄은 [목록 배치의 검색 줄 구성](../../docs/cases/screen/list-screen.md#검색-줄-구성-admin)대로 만든다: 검색과 동작 버튼을 한 줄에, 왼쪽은 대상 선택 → 기간 → 검색 조건 → 검색어 → 검색 버튼, 오른쪽은 `btn-type5` 동작 버튼과 맨 끝 내보내기, 라벨 없음, 표준 너비.
 - 버튼 비활성 모양, 표 밖 안내 영역, 프로토타입 전용 토글·URL 파라미터·설명 문구를 만들지 않는다. 지금 할 수 없는 동작은 누를 때 `$.alert`로 알리고, 정해지지 않은 동작은 토글로 두지 말고 사용자에게 묻는다.
 - 새 클래스·새 인라인 style·별도 `<style>` 규칙을 만들지 않는다. 표준에 없는 표현이 필요하면 참고 화면 → 같은 모듈 기존 화면 순서로 찾고, 그래도 없으면 사용자에게 제안해 확정한 뒤 사용하고 제출 시 카탈로그 추가 대상으로 알린다.
@@ -63,6 +67,7 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
   - 팝업 본문(`popup-head`/`popup-body`/`popup-foot`과 그 script)은 `<template id="popup...">`에 둔다.
   - `[프로토타입]` 팝업 열기 함수가 `showPopup(url, width, height)`과 같은 일을 한다: `#bPopup` 크기를 width·height로 정하고, `.bpopup-content`에 iframe을 넣어 `srcdoc`으로 팝업 문서를 쓰고, `$('#bPopup').bPopup(...)`으로 연다. 팝업 문서는 해당 `popup_layout*`의 `<link>`·`<script>`(같은 상대 경로), `body`(테마 클래스) > `#wrap.w-pop`(+`bg-black`/`bg-white`) > `.w-popup.wide.js-layer` > 템플릿 내용으로 만든다.
   - 크기는 실제 구현에서 `showPopup`에 넘길 값으로 정하고 주석으로 남긴다. 닫기는 팝업 안 `closePopup(true)`이 부모의 `closePopup()`을 부르는 기존 흐름을 쓴다.
+  - 팝업 본문은 [컴포넌트 표준의 팝업 항목](../../docs/reference/ui-components.md#등록수정-폼-팝업)을 따른다: 너비 1000 이상, 우상단 × 없이 하단 닫기·취소로 닫기, 팝업 안 검색은 `head_option` 검색 줄, 긴 값은 `tbl-type4 vertical`의 `textarea.w100p`, 고정 높이 영역은 하단 버튼과 겹치지 않게.
 - 서버 호출이 들어갈 자리(목록 조회·저장·삭제 등)는 `// [프로토타입] 서버 호출 대체` 주석을 붙인 함수로 모아 샘플 데이터 반환·성공 처리만 한다. 검색은 샘플 행을 조건으로 걸러 보여 준다. 그 밖의 코드에 샘플 데이터나 서버 대체 로직을 섞지 않는다.
 - 권한별 버튼 노출처럼 서버가 결정하는 것은 기본 상태로 보여 주고 주석으로 표시한다.
 
@@ -76,17 +81,11 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
   - 콘솔 오류 0건, CSS·JS·언어 문구 로딩.
   - 표 페이징·건수 선택·정렬·선택, 검색·초기화, 빈 결과, 검증 알림, 팝업 열기·닫기, 날짜 입력 등 요청된 동작.
   - 배치·정렬·간격·넘침.
-  - 위 항목을 다크·화이트 두 테마에서 각각 확인한다.
+  - 위 항목을 다크·화이트 두 테마에서 각각 확인한다. 팝업은 iframe 문서 안 요소의 계산된 색(배경·글자)까지 본다 — 팝업은 메인과 다른 CSS(`css_nh`)를 써서 같은 클래스라도 다크 색이 다를 수 있다.
+  - 창 크기를 바꾼 뒤에는 `window.innerWidth`로 실제 폭을 확인한다(창 크기 변경이 반영되지 않을 때가 있다). 검색 줄이 한 줄인지는 기준 폭(1920 창)에서 판단한다.
+- Claude in Chrome 확장에 파일 URL 접근이 허용되지 않아 `file://`이 열리지 않으면 사용자에게 허용을 요청한다. 확인용으로 임시 정적 서버(Python이 없으면 Node)를 띄웠다면 결과물에 포함하지 않고, 확인이 끝나면 종료하고 그 사실을 알린다.
 - 파일에 쓴 class를 모두 대상 모듈 `static/css`와 [컴포넌트 표준](../../docs/reference/ui-components.md)·참고 화면에서 Grep으로 찾아 없는 것이 없는지 확인한다.
-- 제출 전 표준 점검(이전 시안에서 반복해 고친 항목):
-  - [ ] 디자인 기준 화면을 사용자와 정했고, 그 화면과 배치·간격·버튼이 같다.
-  - [ ] 검색 줄: 라벨 없음, 대상 → 기간 → 검색 조건 → 검색어 → 검색 버튼 순서, `~`가 보이게 `head_optionLeft`에 `font-size: 14px`.
-  - [ ] 동작 버튼: 검색과 같은 줄 오른쪽, `btn-type5`, 내보내기는 맨 끝, 문구는 자료사전 값(`Term.Export` 등).
-  - [ ] 기간: 요구사항에서 정한 A/B 한 방식, 기간 사용 여부 select 없음.
-  - [ ] 테마: Admin은 다크로 시작, 헤더 테마 select로 화이트 전환, 직접 지정한 색 없음.
-  - [ ] 팝업: 별도 문서(iframe)·`popup_layout` 구조·`showPopup` 크기, 자체 모달 없음.
-  - [ ] `<style>`에 file:// 보정 외 규칙 없음, 새 클래스·비활성 모양·안내 영역·프로토타입 전용 토글 없음.
-  - [ ] 선택 목록·코드 표시에 `코드사전:`·`자료사전:` 표시.
+- 제출 전 [일관성 점검표](../../docs/cases/screen/consistency-check.md#점검표)를 한 항목씩 확인하고 결과를 진행 기록에 남긴다.
 - 아래 **실제 화면 비교**를 마친 뒤에만 제출한다. 소스 마크업 대조로 대신하지 않는다.
 - 사용자에게 파일 경로, 확인한 내용, 비교한 실제 화면과 남은 차이(샘플 데이터 차이 외에는 없어야 한다), `[프로토타입]`으로 대체한 서버 동작 목록, 표준에 없어 새로 정한 컴포넌트를 짧게 제시한다. 메인 흐름에서는 화면 승인을 요청하고 대기한다.
 
@@ -102,4 +101,8 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 6. **나란히 비교·수정**: 같은 창 크기에서 실제 화면과 프로토타입의 스크린샷을 찍어 헤더·메뉴·경로, 검색 영역, 기간·select·input 크기와 간격, 버튼 모양·위치, 표 머리글·행 높이·페이징·건수 선택·빈 결과 문구, 글꼴, 팝업과 폼을 하나씩 대조한다. 동작(날짜 선택 창, 행 선택, 팝업 열기·닫기, 알림창)도 실제 화면에서 같은 동작을 해 보고 비교한다. 차이는 프로토타입을 고쳐 없애고 다시 비교한다. 샘플 데이터 내용만 다른 상태가 될 때까지 반복한다.
 7. **두 테마 비교**: 실제 화면의 헤더 테마 select로 다크와 화이트를 각각 바꿔 6을 반복하고, 프로토타입도 같은 테마로 바꿔 대조한다. 테마 변경은 사용자 계정의 쿠키·세션에 저장되므로 바꾸기 전 원래 테마를 기록하고, 비교가 끝나면 원래 테마로 되돌린 뒤 되돌렸다고 알린다.
 8. **기록**: 비교한 URL, 테마, 창 크기, 스크린샷, 고친 차이를 작업 폴더 `evidence/`에 남긴다. 직접 띄운 서버는 제출 때 실행 중임을 알린다.
-- 수정 의견은 같은 파일에 반영한다.
+## 수정 의견 반영
+
+- 수정 의견은 같은 파일에 반영한다. [일관성 맞추기의 수정 의견 반영](../../docs/cases/screen/consistency-check.md#수정-의견-반영)대로 의견을 규칙 한 줄로 바꿔 메인·팝업·두 테마 전체에서 같은 패턴을 함께 고치고, 진행 기록에 `의견 → 규칙 → 고친 위치`를 남긴다.
+- 고친 뒤 실제 화면 비교(6·7단계)와 점검표를 다시 확인하고 제출한다.
+- 다른 화면에도 적용될 결정은 시안 승인 뒤 docs 반영을 제안한다.

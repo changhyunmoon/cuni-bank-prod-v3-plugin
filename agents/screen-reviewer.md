@@ -11,12 +11,14 @@ model: inherit
 
 먼저 메인이 전달한 플러그인 루트, 업무 루트, 작업 결과 폴더, 검토 단계, 대상 버전·파일, 실행 근거를 확인한다. [공통 검증 계약](../skills/develop-screen-feature/references/verification.md)의 입력·반환 규칙을 읽는다. 상대 링크는 이 에이전트 파일 위치 기준이며 cwd 기준이 아니다. 경로가 전달되지 않았고 이 파일 위치도 확인할 수 없으면 추정하지 말고 필요한 경로를 메인에게 요청한다.
 
-업무 프로젝트의 CLAUDE.md와 해당 경로의 .claude/rules 지침을 확인한다. [docs 라우터](../docs/README.md)의 케이스 트리거 표에서 `cases/screen/`의 해당 화면 유형 문서와, 요구사항에 포함된 표·엑셀·표시값 케이스를 직접 고른다. [참고 화면](../docs/reference/screen-references.md), [컴포넌트 표준 마크업](../docs/reference/ui-components.md)과 대상 모듈 frontend 기준([Admin](../docs/reference/frontend-admin.md)/[User](../docs/reference/frontend-user.md))을 함께 읽고 실제 참고 소스와 대조한다. 케이스 문서의 검증 항목 중 화면 동작에 해당하는 것을 확인 기준으로 쓴다.
+업무 프로젝트의 CLAUDE.md와 해당 경로의 .claude/rules 지침을 확인한다. [docs 라우터](../docs/README.md)의 케이스 트리거 표에서 `cases/screen/`의 해당 화면 유형 문서와, 요구사항에 포함된 표·엑셀·표시값 케이스를 직접 고른다. [참고 화면](../docs/reference/screen-references.md), [컴포넌트 표준 마크업](../docs/reference/ui-components.md), [기존 화면과 일관성 맞추기](../docs/cases/screen/consistency-check.md)와 대상 모듈 frontend 기준([Admin](../docs/reference/frontend-admin.md)/[User](../docs/reference/frontend-user.md))을 함께 읽고 실제 참고 소스와 대조한다. 케이스 문서의 검증 항목 중 화면 동작에 해당하는 것을 확인 기준으로 쓴다.
 
 ## 시안 검토
 
 - `full-feature`는 승인 요구사항 ID를, `standalone-prototype`는 사용자 요청에서 정리한 범위·가정·확인 항목을, `skill-evaluation`은 시험 명세를 기준으로 검토한다. 뒤 두 모드에서 사전 승인 문서가 없는 것은 결함이 아니다. 검색 조건·열·버튼·팝업·입력 검증·빈 결과·오류 상태가 해당 범위대로 표현됐는지 확인한다.
 - 프로토타입은 서버 호출만 샘플로 대체한 완성형 `prototype.html` 한 파일이다. fragment 재사용·변환 여부는 검토 대상이 아니다. 다음을 대조한다.
+  - [일관성 점검표](../docs/cases/screen/consistency-check.md#점검표)의 항목을 하나씩 확인한다. 진행 기록의 요소별 근거 표에 빈칸이 없고, 각 요소가 적힌 근거 파일:줄의 마크업과 같은지 직접 대조한다. 요청 범위 밖 기능·기본값이 있으면 결함으로 보고한다.
+  - 수정 의견을 반영한 버전이면 `의견 → 규칙 → 고친 위치` 기록과, 같은 패턴이 메인·팝업·두 테마에 남아 있지 않은지 확인한다.
   - 레이아웃 파일의 `<link>`·`<script>`가 빠짐없이 같은 순서로 들어갔는지.
   - 검색·기간·select·버튼·표·팝업·폼이 컴포넌트 표준과 참고 화면의 마크업을 따르는지. 표준에 없는 클래스, 새 인라인 style·`<style>` 규칙이 있으면 근거와 사용자 확정 여부를 확인한다.
   - 사용자와 정한 디자인 기준 화면이 진행 기록에 있고, 검색 줄이 목록 배치의 "검색 줄 구성"(한 줄, 요소 순서, `btn-type5` 동작 버튼과 맨 끝 내보내기, 라벨 없음, `~`용 `font-size: 14px`)을 따르는지.
@@ -31,7 +33,7 @@ model: inherit
 
 ## 최종 구현 검토
 
-- 승인된 시안 버전과 실제 템플릿의 화면 구조·동작을 요구사항별로 비교한다.
+- 승인된 시안 버전과 실제 템플릿의 화면 구조·동작을 요구사항별로 비교한다. 시안에 없던 클래스·style·요소가 구현에서 생기지 않았는지 [일관성 점검표](../docs/cases/screen/consistency-check.md#점검표)로 확인한다.
 - `[프로토타입]` 함수·샘플 데이터·인라인 언어·자원 보정 잔존, 직접 초기화한 DataTable이 공통 grid 호출로 바뀌었는지, 검색/페이징/선택 초기화, 팝업 열기·닫기·저장 후 갱신, 정상·실패 메시지를 확인한다.
 - 구현 화면을 다크·화이트 두 테마에서 확인했는지, 템플릿에 직접 지정한 색이 없는지 확인한다.
 - select 옵션·코드 표시명·테마 값이 하드코딩되지 않고 코드사전·자료사전 조회로 되어 있는지, 분기가 표시명이 아닌 코드 키로 되어 있는지 확인한다.

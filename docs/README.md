@@ -29,6 +29,7 @@
 | 이럴 때 | 케이스 문서 | 함께 볼 reference |
 |---|---|---|
 | 새 화면 파일 작성, 화면 스크립트 구조 변경, 화면 시안(prototype) | [screen/new-screen.md](cases/screen/new-screen.md) | 대상 모듈 [frontend-admin](reference/frontend-admin.md) / [frontend-user](reference/frontend-user.md), [screen-references](reference/screen-references.md), [ui-components](reference/ui-components.md), [theme](reference/theme.md) |
+| 화면 시안 작성·수정, 화면 수정 의견 반영, 화면 구현 후 기존 화면과 일관성 점검 | [screen/consistency-check.md](cases/screen/consistency-check.md) | ui-components, theme, screen-references |
 | 검색+표 목록, 좌우 연동 목록 | [screen/list-screen.md](cases/screen/list-screen.md) | screen-references, ui-components |
 | 다크·화이트 테마 대응, 색·차트 색 지정 | — (reference만) | [theme](reference/theme.md) |
 | 검색 영역의 기간(시작~종료) 입력 | [screen/period-search.md](cases/screen/period-search.md) | ui-components |

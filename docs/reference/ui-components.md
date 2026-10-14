@@ -97,17 +97,18 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 |---|---|---|---|
 | 검색 | `head_optionLeft` 끝 | `button.btn-search` | 참고 화면 workloadList |
 | 등록·추가 | `head_optionRight` | `a.btn-type5.small.blue.js-open.rec` | 참고 화면 `k8s/projectlist.html:171` |
-| 기타 화면 동작(컬럼 선택 등) | `head_optionRight` | `a.btn-type5.small.js-open.modify`, 글자가 길면 `style="width: auto;"` | `monitoring/vmManagerManagement/list.html:543` |
+| 기타 화면 동작(컬럼 선택 등) | `head_optionRight` | `a.btn-type5.small.js-open.modify`, 글자가 길면 `style="width: auto; margin-right: 15px;"` | `monitoring/vmManagerManagement/list.html:543` |
 | 수정 | `head_optionRight` | `a.btn-type5.small.js-open.modify` | `alarmManagement/alarmmessageManagement.html:169` |
 | 삭제 | `head_optionRight` | `a.btn-type5.small.del` | 동일 화면 |
 | 상세 | 표 위 오른쪽 | `a.btn-type1.detail.js-open` | 참고 화면 `task/viewprogresscreatek8snamespace.html` |
 | 엑셀 내보내기 | `head_optionRight` 맨 끝 | `a.btn-type5.export` (확정), 문구는 자료사전 `Term.Export`("내보내기") | `monitoring/vmManagerManagement/list.html:558-560` 외. 동작은 [엑셀 표준](../cases/table/excel-export.md) |
 | 팝업 닫기(하단) | `popup-foot` | `button.btn-type2.js-close` | `cloud/projectmember/save.html:186` |
 | 팝업 저장(하단) | `popup-foot` | `input[type=submit].btn-type2.blue` 또는 `button.btn-type2.blue` | `cloud/projectmember/save.html:187` |
-| 팝업 닫기(우상단) | `popup-head` | `button.btn-popupClose.js-close` | `cloud/projectmember/save.html:145` |
 
 - 이벤트는 ready에서 한 번만 연결한다. 같은 버튼에 `onclick` 속성을 함께 쓰지 않는다([공통 작성 순서](../cases/screen/new-screen.md)).
 - `btn-type5` 버튼 사이 세로 구분선과 `small` 버튼의 고정 폭은 기본 디자인이다. 지우거나 바꾸지 않는다.
+- `small` 고정 폭(100px)에 아이콘과 4글자 이상(예: "컬럼 선택")이 들어가면 줄바꿈된다. 이때 `width: auto`만 주면 버튼이 글자 폭으로 줄어 다음 버튼의 구분선(`|`)에 붙으므로 `margin-right: 15px`를 함께 준다.
+- 팝업은 `popup-head`에 제목만 두고 하단 `popup-foot`의 닫기·취소 버튼으로 닫는다. 우상단 `btn-popupClose`(×)는 넣지 않는다(확정, 사용자 결정 2026-10-14 — `layout_final/popup_layout` 화면 130개 중 96개가 ×없이 하단 버튼만 사용).
 - 버튼에 비활성 모양을 만들지 않는다(`btn-type5`에는 비활성 스타일이 없다). 지금 할 수 없는 동작이면 누를 때 조건을 확인해 `$.alert`로 알리고 멈춘다. 숨겨야 하는 요구가 있으면 기존처럼 `.hide()`/`.show()`로 한다(`monitoring/monthlyReport.html:67`).
 
 ## 표
@@ -119,6 +120,8 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 | 미리보기·입력 행 | `div.tbl-type6` > `table.uk-table.uk-table-hover` (bluksave) | `div.tbl-type6` |
 
 - `<thead>`의 `<th scope="col">` 수·순서는 `columns`와 맞춘다. 긴 열은 `dt-body-ellipsis`.
+- 단, Admin의 `dt-body-ellipsis` 규칙은 `static/css/content.css`에만 있고 `layout_admin`은 이 파일을 로드하지 않아 클래스만으로는 말줄임이 되지 않는다(2026-10-14 확인). 말줄임이 요구사항이면 처리 방식을 사용자와 정한다.
+- 컬럼 수가 많아 가로 스크롤이 필요한 표는 `scrollX width100` 래퍼만으로는 열이 좁아져 머리글이 겹친다. 열을 줄이지 않고 스크롤시키는 방법은 사용자와 정하고 두 테마에서 머리글 겹침을 확인한다.
 - 표 옵션(페이징 `full_numbers`, `dom`, 건수 선택, 선택 스타일, 빈 결과 문구)은 공통 함수가 정한다. 화면에서 다시 지정하지 않는다([DataTables 선택](../cases/table/table-setup.md)).
 
 ## 등록·수정 폼 (팝업)
@@ -128,7 +131,6 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 ```html
 <div class="popup-head">
     <h2 id="pageTitle"></h2>
-    <button type="button" class="btn-popupClose js-close"></button>
 </div>
 <div class="popup-body">
     <div class="tbl-type2 vertical">
@@ -153,6 +155,21 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 - 진행·조회 팝업은 참고 화면 `task/viewprogresscreatek8snamespace.html:123-154`의 `popup-head` / `popup-body` / `popup-foot`을 따른다.
 - 팝업은 별도 템플릿 페이지다. `showPopup(url, width, height)`(Admin `common.js:376`)가 `#bPopup .bpopup-content`에 iframe으로 열고, 그 페이지는 `popup_layout*`이 `body`(다크면 `dark`) > `#wrap.w-pop`(+`bg-black`/`bg-white`) > `.w-popup.wide.js-layer`로 감싼다. 닫기는 `closePopup`.
 - 크기는 `showPopup`의 width·height로만 정한다(기존 사용 빈도: 1200×600, 1000×750, 1100×900). 화면 안에 자체 모달·배경 막(dim)·팝업 전용 CSS를 만들지 않는다. 그런 요소는 팝업 레이아웃 CSS와 충돌하고 다크 색도 따로 필요해진다.
+- 너비는 1000 이상으로 한다. `layout_final/popup_layout`의 CSS(`css_nh/style_final.css:1812`)가 `.w-pop{min-width:1000px}`이라 더 좁으면 내용이 iframe 밖으로 잘린다.
+- `popup-foot`은 팝업 맨 아래에 고정(`position: absolute; bottom: 0`)이라 본문이 길면 버튼과 겹친다. 고정 높이 영역(목록 스크롤·textarea)은 하단 버튼 위에 간격이 남도록 높이를 정한다.
+
+### 팝업 안 요소의 다크 테마
+
+`layout_final/popup_layout`은 메인 화면과 다른 `css_nh/*.css`를 쓰고, 다크 규칙이 붙는 위치가 정해져 있다. 아래 위치에 두면 두 테마에서 기존 팝업과 같게 보인다.
+
+| 용도 | 마크업 | 다크 모양 | 근거 |
+|---|---|---|---|
+| 팝업 안 목록 검색 | `div.tit_cont`(`style="height:35px"`) > `div.head_option.right_box.mb20` > `select.form-control` + `input[type=search].form-control`(`style="width: 190px"`) + `button.btn-search`, 라벨 없음 | 어두운 배경·밑줄 (`style_final.css:775`) | `cloud/project/popup.html:119-139`, `cloudresource/managementserver/popup.html` |
+| 긴 값·여러 줄 입력 | `div.tbl-type4.vertical` > `table` > `tr.type1` > `td` > `textarea.w100p` | 어두운 배경·테두리 (`style_final.css:1303-1304`) | `cloudresource/managementScript/save.html:127-152` |
+
+- `tbl-type2` 폼 표 안의 input·textarea에는 다크 규칙이 없어 다크에서도 흰 칸이다. 검색 칸·긴 값 칸을 `tbl-type2` 안에 두지 않는다.
+- 검색 줄(`head_option`)은 float라 아래 목록이 DataTables 표가 아니면(`.dataTables_wrapper`의 `clear: both`가 없으면) 검색 줄 옆으로 올라간다. 일반 표를 두면 사이에 `<div class="clear"></div>`를 둔다.
+- 팝업 다크 textarea 글자색(`#888888`)은 회색 표시용 `col-gray`와 같다. 값과 회색 표시(예: `[NULL]`)를 구분해야 하면 회색 표시는 textarea 밖에 둔다.
 
 ## 빈 결과·알림
 
