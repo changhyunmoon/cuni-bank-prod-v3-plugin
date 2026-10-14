@@ -17,7 +17,7 @@
 
 - Admin은 `head_optionLeft`에 검색 조건·검색어·검색 버튼, `head_optionRight`에 화면 동작 버튼을 둔다.
 - User는 같은 API·함수 구조를 참고하더라도 Admin의 외곽 클래스까지 그대로 가져오지 않는다.
-- 검색 조건·기간·버튼의 마크업은 [컴포넌트 표준](../../reference/ui-components.md)을 따른다. 검색 영역에는 라벨을 두지 않는다.
+- 검색 조건·기간·버튼의 마크업은 [컴포넌트 표준](../../reference/ui-components.md)을 따른다. 검색 영역에는 라벨을 두지 않는다. 기간 검색은 [기간 검색 가이드](period-search.md)의 두 방식 중 하나로 만든다.
 - 간격은 참고 화면의 `mt15`·`mt20`, 긴 열은 `dt-body-ellipsis`, 필요한 표 래퍼는 `scrollX`를 우선 활용한다.
 
 ## 목록 생성과 검색

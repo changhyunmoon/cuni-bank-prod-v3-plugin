@@ -30,6 +30,7 @@
 |---|---|---|
 | 새 화면 파일 작성, 화면 스크립트 구조 변경, 화면 시안(prototype) | [screen/new-screen.md](cases/screen/new-screen.md) | 대상 모듈 [frontend-admin](reference/frontend-admin.md) / [frontend-user](reference/frontend-user.md), [screen-references](reference/screen-references.md), [ui-components](reference/ui-components.md) |
 | 검색+표 목록, 좌우 연동 목록 | [screen/list-screen.md](cases/screen/list-screen.md) | screen-references, ui-components |
+| 검색 영역의 기간(시작~종료) 입력 | [screen/period-search.md](cases/screen/period-search.md) | ui-components |
 | 등록·수정 팝업, 파일 업로드·미리보기 | [screen/register-popup.md](cases/screen/register-popup.md) | screen-references, ui-components |
 | 부모 화면에 넣는 읽기 전용 조회 조각 | [screen/lookup-fragment.md](cases/screen/lookup-fragment.md) | screen-references |
 | 새 DataTables 표 생성 | [table/table-setup.md](cases/table/table-setup.md) | [datatables-contract](reference/datatables-contract.md) |

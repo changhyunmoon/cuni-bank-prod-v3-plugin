@@ -59,22 +59,15 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 
 ## 기간 (시작~종료)
 
-Admin — 확정, 근거 `cloudresource/cloudresourcehistory/list.html:164-168`, `batchtask/list.html:404-406`
+기간 검색은 **A. 날짜**(`YYYY-MM-DD`) 또는 **B. 날짜·시간**(`YYYY-MM-DD HH:mm`) 중 하나로만 만든다. 방식 고르는 기준, 마크업, 기본값·검증 스크립트는 [기간 검색 가이드](../cases/screen/period-search.md)를 따른다.
 
-```html
-<div class="head_optionLeft">
-    <input type="text" id="searchStartDate" class="form-control datepicker" style="width: 100px;"/>
-    ~
-    <input type="text" id="searchEndDate" class="form-control datepicker" style="width: 100px;"/>
-    <select id="searchCondition" class="form-control mr10">...</select>
-    ...
-    <button type="button" id="search" class="btn-search">검색</button>
-</div>
-```
+| 방식 | 입력 | 달력 초기화 | 근거 |
+|---|---|---|---|
+| A. 날짜 | `input.form-control.datepicker` `style="width: 100px;"` ~ 같은 입력 | `common.js` 자동 초기화 | `cloudresource/cloudresourcehistory/list.html:164-168`, `task/list.html:610-612` |
+| B. 날짜·시간 | `input.form-control` `style="width:180px;"` ~ 같은 입력 (`datepicker`·`datetimepicker` 클래스 없음) | id로 `datetimepicker({format: 'Y-m-d H:i'})`, 시작·종료 연동 | `ipstatus/list.html:33-52, 164-166` |
 
-- 날짜만이면 `datepicker`, 시각까지면 `datetimepicker` 클래스를 쓴다. `common.js`가 자동 초기화하므로 화면에서 `datetimepicker()`를 다시 설정하지 않는다. 동적으로 만든 입력만 같은 옵션으로 초기화한다.
 - "기간 사용 여부" select, 감싸는 `div`·새 클래스를 추가하지 않는다. 요구사항에 있으면 사용자에게 제안한다.
-- User는 검색 영역 기간의 기존 사례가 없다. 같은 마크업을 User `head_option right_box` 안에 둔다.
+- 등록·수정 폼의 단일 날짜 입력은 아래 폼 안 입력 기준(`input.w100p.datepicker`)을 따른다.
 
 ## 선택·입력 요소
 

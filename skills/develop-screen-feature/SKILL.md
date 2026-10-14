@@ -28,7 +28,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 1. 요구사항 구체화
 
-대상 모듈의 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md))과 [참고 화면](../../docs/reference/screen-references.md), 관련 기존 화면·API([기능별 연결 지도](../../docs/reference/feature-map.md))를 확인해 요청을 실현 가능한 형태로 정리한다. 엑셀 내려받기처럼 케이스 문서가 데이터 범위를 정하는 기능은 그 기준을 요구사항의 완료 조건에 반영한다.
+대상 모듈의 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md))과 [참고 화면](../../docs/reference/screen-references.md), 관련 기존 화면·API([기능별 연결 지도](../../docs/reference/feature-map.md))를 확인해 요청을 실현 가능한 형태로 정리한다. 엑셀 내려받기처럼 케이스 문서가 데이터 범위를 정하는 기능은 그 기준을 요구사항의 완료 조건에 반영한다. 기간 검색이 있으면 [기간 검색 가이드](../../docs/cases/screen/period-search.md)의 A. 날짜 / B. 날짜·시간 중 하나와 기본 기간을 요구사항에 정한다. 요청에 없으면 추천안을 붙여 사용자 결정 사항으로 둔다.
 
 `requirements.md`에 대상 모듈·화면 URL, 요청한 검색·열·버튼·동작, 요구사항 ID(R-01…)와 완료 조건, 제외 범위, 사용자가 정해야 할 사항만 짧게 쓴다. 요청을 해석하며 채운 부분과 제안은 구분해 표시한다.
 
