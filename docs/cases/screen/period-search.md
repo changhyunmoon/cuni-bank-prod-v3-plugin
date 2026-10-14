@@ -19,16 +19,16 @@
 
 ## A. 날짜
 
-마크업 — 근거 `cloudresource/cloudresourcehistory/list.html:164-168`, `task/list.html:610-612`
+마크업 — 근거 `task/list.html:609-613`, `cloudresource/cloudresourcehistory/list.html:164-168`
 
 ```html
 <div class="head_option type2 mt20">
-    <div class="head_optionLeft">
+    <div class="head_optionLeft" style="font-size: 14px;">
         <input type="text" id="searchStartDate" class="form-control datepicker" style="width: 100px;"/>
         ~
         <input type="text" id="searchEndDate" class="form-control datepicker" style="width: 100px;"/>
-        <!-- 검색 조건 select·검색어가 있으면 이어서 -->
-        <button type="button" id="search" class="btn-search">검색</button>
+        <!-- 기간 앞에 대상 선택, 뒤에 검색 조건 select·검색어 (목록 배치의 검색 줄 구성) -->
+        <button type="button" id="search" class="btn-search"></button>
     </div>
 </div>
 ```
@@ -58,6 +58,7 @@ function validateSearchDate() {
 }
 ```
 
+- `head_option`은 `font-size: 0`이라 `head_optionLeft`의 `style="font-size: 14px;"`가 없으면 `~`가 보이지 않는다. 이 style이 빠진 `cloudresourcehistory/list.html`은 따라 하지 않는다.
 - 달력은 `common.js` ready가 `.datepicker`에 `timepicker: false, format: 'Y-m-d'`로 자동 초기화한다. 화면에서 `datetimepicker()`를 다시 호출하지 않는다.
 - 기본값은 `moment()`로 넣는다. `toISOString()`은 UTC 기준이라 자정 전후로 날짜가 하루 어긋날 수 있어 쓰지 않는다(`cloudresourcehistory/list.html:29-34`의 방식은 복사하지 않는다).
 
@@ -67,11 +68,11 @@ function validateSearchDate() {
 
 ```html
 <div class="head_option type2 mt20">
-    <div class="head_optionLeft">
+    <div class="head_optionLeft" style="font-size: 14px;">
         <input type="text" id="searchStartDate" class="form-control" style="width:180px;" autocomplete="off"/>
         ~
         <input type="text" id="searchEndDate" class="form-control" style="width:180px;" autocomplete="off"/>
-        <button type="button" id="search" class="btn-search">검색</button>
+        <button type="button" id="search" class="btn-search"></button>
     </div>
 </div>
 ```

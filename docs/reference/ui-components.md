@@ -7,6 +7,7 @@
 - 근거 경로는 각 모듈의 `src/main/resources/templates/` 기준이다. 문구는 실제 화면에서 자료사전 조회([사전 사용법](../cases/display-value/usage.md))로 넣는다. 아래 예시는 구조만 보이기 위해 한글을 직접 적었다.
 - "참고 화면"은 유승민 최초작성 기준 화면, "확정"은 기준 화면에 없어 모듈 내 사용 빈도를 근거로 사용자가 2026-10-14에 정한 표준이다.
 - 기존 화면에 있는 인라인 style(예: 너비 `style="width: 100px;"`)은 표준 마크업에 포함된 경우만 그대로 쓴다.
+- 표준 클래스는 다크·화이트 테마 규칙을 모두 가진다. 색을 직접 지정하지 않는다([테마](theme.md)).
 
 ## 공통 자원
 
@@ -19,22 +20,31 @@
 
 ## 검색 영역
 
-Admin — 참고 화면 `cloud/k8sworkload/workloadList.html:96-111`
+Admin — 참고 화면 `cloud/k8sworkload/workloadList.html:96-111`, 검색·기간·동작 버튼이 함께 있는 줄은 `monitoring/vmManagerManagement/list.html:514-560`
 
 ```html
 <div class="head_option type2 mt20">
-    <div class="head_optionLeft">
-        <select id="searchCondition" class="form-control mr10">
-            <option value="1">프로젝트명</option>
-        </select>
-        <input type="text" id="searchText" class="form-control" placeholder="검색어를 입력하세요" autocomplete="off">
-        <button type="button" id="search" class="btn-search">검색</button>
+    <div class="head_optionLeft" style="font-size: 14px;">
+        <select id="targetType" class="form-control">...</select>          <!-- 대상 선택(있으면) -->
+        <input type="text" id="searchStartDate" class="form-control datepicker" style="width: 100px;"/>
+        ~
+        <input type="text" id="searchEndDate" class="form-control datepicker" style="width: 100px;"/>
+        <select id="searchCondition" class="form-control mr10">...</select> <!-- 검색 조건 -->
+        <input type="search" id="searchText" class="form-control" placeholder="검색어를 입력하세요" autocomplete="off">
+        <button type="button" id="search" class="btn-search"></button>
     </div>
     <div class="head_optionRight">
-        <!-- 화면 동작 버튼 -->
+        <a href="#" id="save" class="btn-type5 small blue js-open rec">등록</a>
+        <a href="#" id="edit" class="btn-type5 small js-open modify">수정</a>
+        <a href="#" id="delete" class="btn-type5 small del">삭제</a>
+        <a href="#" id="export" class="btn-type5 export">내보내기</a>
     </div>
 </div>
 ```
+
+- 줄 구성(요소 순서, 동작 버튼 위치·순서, 너비)은 [목록 배치](../cases/screen/list-screen.md#검색-줄-구성-admin)를 따른다.
+- `head_option`은 CSS에서 `font-size: 0`이다. `~` 같은 글자가 있으면 `head_optionLeft`에 `style="font-size: 14px;"`를 둔다(Admin 21개 화면 사용).
+- `btn-search`는 아이콘 버튼이다(`text-indent: -9999px`). 글자를 넣어도 보이지 않으므로 비워 두거나 자료사전 `Term.Search`를 넣는다.
 
 User — 참고 화면 `k8s/workloadList.html:100-117`
 
@@ -55,6 +65,7 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 
 - **라벨을 두지 않는다**(확정). 조건의 의미는 select 옵션·placeholder로 보인다. 라벨이 꼭 필요하면 사용자에게 제안한다. `<span>` 라벨을 임의로 넣지 않는다.
 - 검색 조건이 여러 개면 같은 `head_optionLeft` 안에 `select.form-control.mr10`을 이어 둔다.
+- select 옵션은 하드코딩하지 않는다. 검색 항목은 자료사전 `getDicList(category)`, 값 목록(상태·유형 등)은 코드사전 `getCode(category)`로 만든다([사전 사용법](../cases/display-value/usage.md)). 위 예시의 한글 옵션은 구조를 보이기 위한 것이다.
 - 좌우 분할 화면의 검색은 참고 화면 `k8s/projectlist.html`의 `head_option type2` 구성을 그대로 따른다.
 
 ## 기간 (시작~종료)
@@ -86,15 +97,18 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 |---|---|---|---|
 | 검색 | `head_optionLeft` 끝 | `button.btn-search` | 참고 화면 workloadList |
 | 등록·추가 | `head_optionRight` | `a.btn-type5.small.blue.js-open.rec` | 참고 화면 `k8s/projectlist.html:171` |
+| 기타 화면 동작(컬럼 선택 등) | `head_optionRight` | `a.btn-type5.small.js-open.modify`, 글자가 길면 `style="width: auto;"` | `monitoring/vmManagerManagement/list.html:543` |
 | 수정 | `head_optionRight` | `a.btn-type5.small.js-open.modify` | `alarmManagement/alarmmessageManagement.html:169` |
 | 삭제 | `head_optionRight` | `a.btn-type5.small.del` | 동일 화면 |
 | 상세 | 표 위 오른쪽 | `a.btn-type1.detail.js-open` | 참고 화면 `task/viewprogresscreatek8snamespace.html` |
-| 엑셀 내보내기 | `head_optionRight` | `a.btn-type5.export` (확정) | `batchtask/list.html:365` 외. 동작은 [엑셀 표준](../cases/table/excel-export.md) |
+| 엑셀 내보내기 | `head_optionRight` 맨 끝 | `a.btn-type5.export` (확정), 문구는 자료사전 `Term.Export`("내보내기") | `monitoring/vmManagerManagement/list.html:558-560` 외. 동작은 [엑셀 표준](../cases/table/excel-export.md) |
 | 팝업 닫기(하단) | `popup-foot` | `button.btn-type2.js-close` | `cloud/projectmember/save.html:186` |
 | 팝업 저장(하단) | `popup-foot` | `input[type=submit].btn-type2.blue` 또는 `button.btn-type2.blue` | `cloud/projectmember/save.html:187` |
 | 팝업 닫기(우상단) | `popup-head` | `button.btn-popupClose.js-close` | `cloud/projectmember/save.html:145` |
 
 - 이벤트는 ready에서 한 번만 연결한다. 같은 버튼에 `onclick` 속성을 함께 쓰지 않는다([공통 작성 순서](../cases/screen/new-screen.md)).
+- `btn-type5` 버튼 사이 세로 구분선과 `small` 버튼의 고정 폭은 기본 디자인이다. 지우거나 바꾸지 않는다.
+- 버튼에 비활성 모양을 만들지 않는다(`btn-type5`에는 비활성 스타일이 없다). 지금 할 수 없는 동작이면 누를 때 조건을 확인해 `$.alert`로 알리고 멈춘다. 숨겨야 하는 요구가 있으면 기존처럼 `.hide()`/`.show()`로 한다(`monitoring/monthlyReport.html:67`).
 
 ## 표
 
@@ -137,7 +151,8 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 
 - 필수 항목은 `th.asterisk`로 표시한다. 파일 업로드 영역은 `bluksave.html`의 `tbl-type4 vertical` 구성을 따른다([팝업 표준](../cases/screen/register-popup.md)).
 - 진행·조회 팝업은 참고 화면 `task/viewprogresscreatek8snamespace.html:123-154`의 `popup-head` / `popup-body` / `popup-foot`을 따른다.
-- 팝업 열기는 `showPopup`·`showPopupTypeB`(Admin `common.js`), 닫기는 `closePopup`을 쓴다.
+- 팝업은 별도 템플릿 페이지다. `showPopup(url, width, height)`(Admin `common.js:376`)가 `#bPopup .bpopup-content`에 iframe으로 열고, 그 페이지는 `popup_layout*`이 `body`(다크면 `dark`) > `#wrap.w-pop`(+`bg-black`/`bg-white`) > `.w-popup.wide.js-layer`로 감싼다. 닫기는 `closePopup`.
+- 크기는 `showPopup`의 width·height로만 정한다(기존 사용 빈도: 1200×600, 1000×750, 1100×900). 화면 안에 자체 모달·배경 막(dim)·팝업 전용 CSS를 만들지 않는다. 그런 요소는 팝업 레이아웃 CSS와 충돌하고 다크 색도 따로 필요해진다.
 
 ## 빈 결과·알림
 
