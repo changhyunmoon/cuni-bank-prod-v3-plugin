@@ -6,6 +6,7 @@
 - Gradle wrapper 스크립트는 있지만 `gradle/wrapper/`와 wrapper JAR이 없다. 설치된 `gradle`을 사용한다.
 - Java 8 toolchain을 확보하고, 설치 Gradle이 해당 빌드와 호환되는지 확인한다. 권장 Gradle 버전은 아직 확정하지 않았다.
 - Nexus: `https://10.3.200.51:8443/repository/cuni-public/`. `repoUsername`·`repoPassword` 프로젝트 속성이 필요하다.
+- local 프로필은 내부망 자원(Nexus `10.3.200.51`, cmp DB `10.3.200.50:5432` 등)을 쓰므로 **VPN 연결이 필요하다**(사용자 제공 정보, 2026-10-14). 화면 확인에는 대상 포탈과 로그인·데이터를 처리하는 cmp(`application-msa.yml`의 `cmp.url: http://localhost:20590/cmp`)가 함께 떠 있어야 한다.
 - 내부 CA truststore가 필요하다는 내용은 제공된 운영 정보다. 아래 환경변수에 해당 환경의 값을 준비한다.
 
 ```powershell

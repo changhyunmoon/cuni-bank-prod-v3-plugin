@@ -50,3 +50,9 @@
 - 5개 모듈 `build.gradle`의 Java toolchain 8과 `src/main/java`의 필드 주입·`@Valid`·`@Value`·`@ConfigurationProperties`·`catch (Exception`·`*ServiceImpl` 사용 파일 수를 검색했다. 검색 수치이며 개별 사용 맥락은 검토하지 않았다.
 - 커밋 형식은 각 저장소 최근 20건, 브랜치 운용은 cmp 브랜치 목록 기준 관찰이다. 팀 공식 커밋 규칙 문서는 확인하지 못했다.
 - 업무 소스는 수정하지 않았으며 빌드·테스트는 실행하지 않았다.
+
+## 2026-10-14 화면 컴포넌트 표준 확인
+
+- 범위: admin·user `templates` 전체에서 검색 영역·기간 입력·select·input·버튼·표·팝업 폼의 클래스 사용 빈도와 참고 화면 마크업, 양 모듈 `layout_final/layout_admin.html`·`layout_user.html`의 자원 목록, `static/js/common.js`의 날짜 입력 자동 초기화·알림 함수, `datatables.ex.js`의 grid·emptyGrid 기본 옵션을 대조했다. 결과는 [컴포넌트 표준](../reference/ui-components.md)에 기록했다.
+- 참고 화면에 없는 기간 검색·엑셀 버튼·등록 폼·검색 라벨 기준은 사용 빈도와 근거 파일을 제시해 사용자가 확정했다.
+- 업무 소스는 수정하지 않았고 브라우저 렌더링은 검증하지 않았다.

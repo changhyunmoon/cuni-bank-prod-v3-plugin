@@ -18,6 +18,7 @@
 | 6 | 기능별 함수: 목록 생성 → 검색 데이터 → 상세·저장 등 동작 → 보조 함수 |
 | 7 | body의 `layout:fragment="content"`: 검색·버튼·표 또는 팝업 내용 |
 
+- 검색·기간·select·버튼·표·팝업·폼 마크업은 [컴포넌트 표준](../../reference/ui-components.md)을 따른다. 새 클래스·인라인 style을 만들지 않는다.
 - 조회 조각은 완성 페이지 껍데기 대신 `layout:fragment="template"`을 사용한다. [조각 규칙](lookup-fragment.md) 참고.
 - ready에는 시작 순서만 보이게 하고 긴 API·검증 로직은 이름 있는 함수로 분리한다.
 - 변경되지 않는 값은 `const`, 재할당되는 상태는 `let`으로 선언한다. 기존 `var` 혼용은 필수 규칙이 아니다.

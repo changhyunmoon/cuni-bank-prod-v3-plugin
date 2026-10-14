@@ -8,7 +8,7 @@
 progress.md
 requirements.md
 implementation-plan.md
-prototype.html               화면 배치·디자인 확인용 한 파일
+prototype.html               서버 호출만 샘플로 대체한 완성형 화면 시안 한 파일
 verification.md
 evidence/
   snapshots/                 승인·실행·리뷰 기준별 JSON
