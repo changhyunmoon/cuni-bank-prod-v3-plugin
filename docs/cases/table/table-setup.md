@@ -34,8 +34,10 @@
 1. [요청·응답 계약](../../reference/datatables-contract.md)으로 API 적합성을 확인한다. 전체 조회는 데이터량이 제한된 경우에만 선택한다.
 2. `<th>` 순서와 `columns.data`, 정렬 가능 필드, null 표시, 열 너비를 맞춘다.
 3. 행 선택은 목적에 맞게 `select: false / {style: 'single'} / {style: 'multi'}`를 명시한다.
-4. ready에서 한 번 생성하고 검색은 [reloadGrid](table-row-operations.md), 로컬 데이터 변경은 clear/add/draw로 처리한다.
-5. 생성 완료 처리는 `initComplete`, 매번 그린 뒤 처리는 `drawCallback`을 사용한다. 기본 콜백을 대체하는 경우 기존 처리도 검토한다.
+4. **페이지 항목 수는 공통 기본값을 그대로 쓴다**(지침, 2026-10-15 사용자 결정). 일반 목록은 `pageLength`(10, `datatables.ex.js:26`)·`lengthMenu`(10·20·30·50·100·전체, `:36`)를 화면에서 재정의하지 않는다. '전체' 제외·건수 이어받기 같은 요구는 요구사항 단계에서 공통 기본값 대안을 먼저 제시한다.
+   - 관찰(admin `development`): grid 사용 화면 122개 중 `lengthMenu` 재정의는 작은 선택 팝업 3곳(`cloud/project/dpoSavePopup.html`, `daejik/adUserSearch.html`, `masterSolution/saveMember.html`)뿐이다. `pageLength`만 바꾼 곳은 소형 팝업(5·6건)·보고서(-1) 등 12개 파일이며 일반 목록의 근거로 삼지 않는다.
+5. ready에서 한 번 생성하고 검색은 [reloadGrid](table-row-operations.md), 로컬 데이터 변경은 clear/add/draw로 처리한다.
+6. 생성 완료 처리는 `initComplete`, 매번 그린 뒤 처리는 `drawCallback`을 사용한다. 기본 콜백을 대체하는 경우 기존 처리도 검토한다.
 
 ## 스크립트 재사용 경계
 

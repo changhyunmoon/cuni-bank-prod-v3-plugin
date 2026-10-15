@@ -39,12 +39,15 @@ buttons: [{
 ```
 
 4. 위 예시는 표시 열이 모두 데이터 열인 표 기준이다. 체크박스·동작 열이 있으면 해당 열을 제외하도록 `columns` 선택자를 추가 조정한다. DataTables 열 가시성과 CSS로만 숨긴 열은 다를 수 있으므로 결과를 확인한다.
-5. 기존 화면 버튼을 쓰면 생성된 Excel 버튼은 해당 표 컨테이너 안에서 숨긴다. 클릭 이벤트는 한 번만 연결한다.
+5. **기존 화면 방식을 그대로 쓴다**(지침, 2026-10-15 사용자 결정): `excelHtml5` 버튼 정의 → `preDrawCallback`에서 생성된 Excel 버튼 숨김 → 화면의 [내보내기] 버튼에서 실행(`admin:templates/monitoring/vmManagerManagement/list.html:282-294·504`, `system/loginHistory/list.html:50-57·91-92`). 그 위에 위 3의 표준 옵션, 아래 6의 0건·조회 중 안내, 대상 표 trigger만 더한다. 클릭 이벤트는 한 번만 연결한다.
 6. 화면의 `exportData()`에서는 0건·조회 중 여부를 검사한 후 `$('#grid').DataTable().button('.buttons-excel').trigger()`로 **대상 표만** 실행한다. 여러 Excel 버튼이면 고유 버튼 선택자를 사용한다.
+   - 파일명(`filename`) 지정은 허용한다. `customize(xlsx)`로 셀 서식을 바꾸는 방식(텍스트 셀 강제, 색, 줄바꿈 보존)은 쓰지 않는다. 공통 함수가 없고 사례도 `monitoring/iaaSDailyReport.html`의 인라인 1곳뿐이다.
+   - 화면에 없는 엑셀 요구(셀 서식·색·줄바꿈 보존)가 있으면 요구사항 단계에서 "기존 방식으로는 불가 → 포기 / 공통 함수 신설" 중 하나를 사용자에게 고르게 한다.
 7. 파일 제목·버튼·안내 문구는 [사전 사용법](../display-value/usage.md)을 따른다. `pageTitle`도 실제 화면 제목의 사전값으로 준비한다.
 
 ## 복사하지 않을 기존 패턴
 
+- 화면마다 `customize`로 xlsx XML을 직접 고치는 인라인 코드(`iaaSDailyReport.html`).
 - 전역 `$('.buttons-excel').click()`은 여러 표의 내보내기를 함께 실행할 수 있으므로 표 API로 범위를 제한한다.
 - Buttons 기본 export는 선택 행이 있으면 선택 행만 추출할 수 있다. `selected: null`을 생략하지 않는다.
 - 브라우저에 모든 행이 로드된 표도 `page: 'current'`를 생략하면 다른 페이지가 포함될 수 있다.

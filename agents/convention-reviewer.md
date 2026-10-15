@@ -23,9 +23,14 @@ model: inherit
 
 - 시안(`prototype.html` 한 파일, 요청 시에만): 참고 화면 선택, Admin/User frontend 기준의 레이아웃 구조·CSS 클래스·검색/버튼/표 배치. fragment 재사용·Thymeleaf 초안은 시안 단계 검토 대상이 아니며 구현 단계에서 확인한다.
 - 설계: [설계 양식](../skills/develop-screen-feature/references/implementation-plan-template.md)의 절이 모두 채워졌는지(해당 없음은 이유), 모듈별 구현 브랜치와 관련 feature 브랜치·이전 작업 판단, 참고 기능 추적표가 실제 파일:줄과 맞는지, 포탈 → Proxy → CMP 책임, DB 기술 선택 및 선택한 기술 규칙, 기존 API/컴포넌트 재사용, 메뉴·데이터 범위, 표시값·등록·캐시 설계.
-- 구현: 실제 파일 구조·명명·이벤트·공통 함수·응답 처리, 표 생성·검색·재조회·행 선택, 엑셀 내보내기의 현재 페이지·전체 행·표시 열 범위, Controller/Service/Repository 또는 Mapper 책임, 트랜잭션, 자료사전·코드·설정 조회와 임시값 해제. 임시값 잔존 여부는 `[임시값]`·`TEMP-DISPLAY-VALUE` 표식 검색으로 확인하고, 미등록 판단에 DB 조회 근거가 없으면 메인 Claude에게 [query-db](../skills/query-db/SKILL.md) 조회를 요청하고, 남은 항목마다 [등록 안내 가이드](../docs/cases/display-value/temporary-value.md) 형식의 등록 안내가 제공됐는지 확인한다.
+- 구현: 실제 파일 구조·명명·이벤트·공통 함수·응답 처리, 표 생성·검색·재조회·행 선택, 엑셀 내보내기의 현재 페이지·전체 행·표시 열 범위, Controller/Service/Repository 또는 Mapper 책임, 트랜잭션, 자료사전·코드·설정 조회와 임시값 해제. 임시값 잔존 여부는 `[임시값]`·`TEMP-DISPLAY-VALUE` 표식 검색으로 확인하고, 미등록 판단에 DB 조회 근거가 없으면 메인 Claude에게 [query-db](../skills/query-db/SKILL.md) 조회를 요청하고, 남은 항목마다 [등록 안내 가이드](../docs/cases/display-value/temporary-value.md) 형식의 등록 안내가 제공됐는지 확인한다. 등록 안내는 [테이블별 목록·SQL 형식](../skills/develop-screen-feature/references/registration.md)을 따른다. 코드의 조회 키가 목록과 SQL에 빠짐없이 있는지, 모든 키에 DB 저장 여부 조회 근거(조회한 DB·SQL·결과)가 있고 이미 있는 값이 SQL에서 빠졌는지, 값이 다른 키를 INSERT에 넣지 않았는지, 테이블마다 SQL 파일이 하나씩 있는지, 다시 실행해도 안전한지(`WHERE NOT EXISTS`), 기본이 `ROLLBACK`인지 확인한다.
 - 검증 근거: 빌드·테스트 문서의 실행 전제, 실제 테스트 건수·skip·미실행 표시, 업무 프로젝트 결과 폴더와 승인 버전 기록.
 
+- 재사용 우선: [기존 구조 재사용 원칙](../docs/foundation/coding-rules.md)대로 공통 방식으로 충족할 수 있는데 새로 만든 부분(grid `pageLength`·`lengthMenu`·`language` 재정의, 엑셀 `customize`, Controller 메뉴 권한 검사, `callAjax` 실패 처리 재정의, 공통 페이징 미사용)을 찾는다. 사용자가 공통 방식 대안을 보고 새 구현을 결정한 기록이 없으면 P2로 보고한다.
+- 하드코딩: [하드코딩 경계](../docs/cases/display-value/hardcoding-boundary.md)의 "DB로 빼는 것"(화면·안내창 문구, 옵션·코드 표시명, 화면 날짜 표시 형식, 운영 값)이 리터럴로 남았는지 찾는다. "코드에 두는 것"에 해당하는 상수는 지적하지 않는다.
+
 각 발견 사항에 적용 문서 경로·해당 규칙과 위반 소스 위치를 함께 제시한다. 명시된 표준, 현재 코드 관찰, 선택적 개선 제안을 구분한다. 기존 코드의 하드코딩·결함을 표준으로 강요하지 않는다. 문서와 코드가 충돌하면 양쪽 근거와 영향을 보고한다.
+
+수정 제안은 공통 함수·기존 구조를 쓰는 방향으로만 낸다. 기존 화면에 없는 새 방식(공통 함수 재정의, 새 유틸·클래스·CSS, 기존에 없는 검사)을 개선안으로 제안하지 않는다. 기존 방식으로 요구를 충족할 수 없으면 "기존 방식으로 불가 — 사용자 결정 필요"로 보고한다.
 
 일반적인 취향이나 이번 범위 밖 전면 리팩터링을 필수 수정으로 만들지 않는다. 규칙이 없는 경우 유사 구현과 일관성을 설명하되 새 규칙을 발명하지 않는다. 공통 반환 형식으로 적용 문서·판정·발견 사항·미검증을 전달한다.

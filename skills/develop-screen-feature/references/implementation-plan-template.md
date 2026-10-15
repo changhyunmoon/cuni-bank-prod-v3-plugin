@@ -23,12 +23,13 @@
 | CMP Service | | |
 | Support·Repository·DAO | | |
 | DB(테이블·엔티티) | | |
+DB 접근 기술: <선택> — 재사용 순서(기존 Repository·Support → 기존 엔티티 + QueryDSL → 메타모델+PathBuilder/MyBatis) 중 앞 단계를 쓰지 않는 이유
 
 ## 3. 서버 호출 대응표
 (docs/cases/backend/screen-api-contract.md 형식. prototype의 [프로토타입] 함수마다 한 행)
 
 ## 4. API 계약
-API마다: 메서드·경로 / 요청 필드(이름·타입·필수·예) / 응답 필드(이름·타입·예) / 정렬·페이징 / 실패 시 동작 / 권한·데이터 범위 검사 위치
+API마다: 메서드·경로 / 요청 필드(이름·타입·필수·예) / 응답 필드(이름·타입·예) / 정렬·페이징(공통 구조 이름) / 실패 시 동작(공통 실패 계약이면 "공통") / 권한(메뉴 권한은 기존 구조, 데이터 범위 검사가 있으면 위치)
 기존 API 재사용이면 그 API 경로와 재사용 근거만.
 
 ## 5. 파일
@@ -55,6 +56,7 @@ docs에 해당 케이스가 없는 부분: <내용, 조사한 근거, 위험>
 ## 9. 참고 기능과 다른 점·위험·결정 필요
 | 구분 | 내용 | 이유·영향 |
 |---|---|---|
+(공통 방식으로 안 되어 새로 만드는 부분은 "기존 방식으로 안 되는 이유"와 공통 방식 대안을 함께 적는다)
 ```
 
 작성 규칙:
@@ -64,4 +66,6 @@ docs에 해당 케이스가 없는 부분: <내용, 조사한 근거, 위험>
 - 2절: DB 행은 query-db `columns`로 확인한 실제 컬럼을 기준으로 쓰고, 엔티티와 다르면 적는다.
 - 6절: 등록 여부는 [query-db](../../query-db/SKILL.md)로 조회해 채운다. 접속하지 못했으면 `미확인`이다. 코드 검색만으로 `확인됨`이라 쓰지 않는다.
 - 3·4절: [시안의 서버 호출을 API 계약으로](../../../docs/cases/backend/screen-api-contract.md)를 따른다. 시안과 이름이 다르면 시안을 고칠 대상으로 9절에 적는다.
+- 4절: 페이징은 `createPageRequest` 또는 [MyBatis 공통 페이징](../../../docs/cases/db/mybatis.md), 실패는 [CMP 오류 처리](../../../docs/cases/backend/cmp-new-api.md), 메뉴 권한은 [포탈 Controller](../../../docs/cases/backend/portal-controller-proxy.md) 규칙을 기본으로 쓴다. 다르게 하면 9절에 적는다.
+- 6절: 화면 문구·옵션·날짜 표시 형식·운영 값은 모두 행으로 적는다. 코드 상수로 두는 값은 [하드코딩 경계](../../../docs/cases/display-value/hardcoding-boundary.md)의 "코드에 두는 것"에 해당할 때만이다.
 - 8절의 시나리오는 5단계 verification.md에서 그대로 결과를 채운다.

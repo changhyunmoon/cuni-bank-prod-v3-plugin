@@ -89,3 +89,12 @@
 - 범위: docs의 예시 사전·코드 키, Admin 관리 화면 URL, 메뉴 트리·유형·적용 대상, 권한 그룹 구분값, 프로젝트 역할 테이블, 테마 코드, 설정 카테고리를 개발 DB 사본 `cuni_prg`로 조회해 대조했다(조회 전용, 값 변경 없음).
 - 고친 사실: Admin 메뉴관리·권한그룹별메뉴관리 URL을 `/admin/menus/list`·`/admin/auth-menus/list`로 수정, User 메뉴도 Admin 메뉴관리에서 `UserPortal`로 등록함을 추가, `Culture`는 `ko-KR`만 사용 중임을 추가, 자료사전 예시를 등록된 키로 교체.
 - 화면 렌더링(언어 입력칸 수, 테마 옵션 순서)은 DB 값과 코드로 추론했으며 브라우저로 확인하지 않았다. query-db가 읽는 DB는 개발 서버 DB를 dump한 사용자 전용 VM의 별도 DB이며 local 프로필 DB와 다르다(사용자 제공 정보). dump 시점은 기록되지 않았다.
+
+## 2026-10-15 CUNI-536 개발 기준 반영
+
+- 입력: 업무 루트 `outputs/20261014-data-monitoring-cuni536-2/`의 `progress.md`·`requirements.md`(v1.2)·`implementation-plan.md`(v2)·`verification.md`와 사용자가 정리한 결정 9개. 사용자 지시로 "기존 코드·구조 재사용 우선, 기존 방식으로 안 되는 부분만 신규"와 "기존이 하드코딩하지 않는 값은 하드코딩하지 않음"을 지침으로 [코딩 규칙](../foundation/coding-rules.md)·[하드코딩 경계](../cases/display-value/hardcoding-boundary.md)에 두었다.
+- 저장소 기준: admin `CUNI-536` ab56d2b0(미커밋 5건: 새 Controller·Client·템플릿, `application-msa.yml`·`style.css`), cmp `CUNI-536` 147e84e3(미커밋 5건: 새 Controller·Service·Dao·Mapper, 로컬 전용 `application-datasource.yml`). 수치는 두 모듈 모두 `development`에서 `git grep`으로 다시 셌다. [동적 조회](../cases/db/dynamic-metadata-query.md)의 근거만 CUNI-536 미커밋 파일이다.
+- 확인한 코드: `datatables.ex.js`(grid 기본값·initComplete), cmp `ApiController`(`createPageRequest`·`createPageDto`), `Pagination`·`MybatisPaginationUtil`과 사용 DAO 5곳, cmp·admin `GlobalExceptionHandler`, admin `common.js` `callAjax`, `CheckSessionInterceptor`, cmp `CodeService`(저장 시 캐시 미삭제), admin `application.yml`(thymeleaf cache·view-names)·`SettingController` `@PostConstruct`, 엑셀 기존 화면 2개와 `iaaSDailyReport.html`의 `customize`.
+- DB: query-db로 `cuni_prg`(개발 DB 사본)를 조회만 했다. public 기본키 제약 245개(테이블 336개 중 91개 없음), 문자열 자료형의 날짜성 이름 컬럼 108개(이름 패턴 추정). CUNI-536 작업 당시 기록(기본키 제약 0개, 83개)과 달라 문서에는 둘 다 적었다.
+- 실행하지 않은 것: 빌드·화면 실행(실행 사실은 CUNI-536 `verification.md` 기록을 옮김), 권한 없는 계정의 GET 차단, xlsx 실제 다운로드. 업무 소스는 수정하지 않았다.
+- DB 접근 방식 근거 정정: 데이터 모니터링 설정 테이블 3개(`virtualvm`·`code_tp`·`menu_tp`)는 모두 cmp 엔티티(`VirtualVm`·`Code`·`Menu`)가 있다. 구현 설계의 "엔티티 없는 동적 테이블"이라는 근거는 부정확했다. MyBatis를 쓴 이유는 DB 값을 그대로 보여 주는 요구사항(컬럼 순서·`::text`·`ctid`) 때문이다. Q클래스는 빌드 때 모든 엔티티에 대해 생성되므로(cmp `build/generated/querydsl` 213개) JPA 메타모델 + `PathBuilder` 대안도 가능했다. 둘 다 [선택 기준](../cases/db/access-selection.md)에 반영했다. 함께 확인한 것: cmp `development`의 `@Entity` 183개, DB public 테이블 336개, `createNativeQuery` 사용 5개 파일, `PathBuilder` 사용 3개 파일(엔티티를 동적으로 고르는 사례 없음).

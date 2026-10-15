@@ -19,7 +19,7 @@
 | [project-map.md](foundation/project-map.md) | 5개 독립 저장소, 모듈 역할, 포트·컨텍스트 |
 | [architecture.md](foundation/architecture.md) | 포탈·CMP·배치·연계의 책임과 전체 흐름 |
 | [modules/cmp.md](foundation/modules/cmp.md) · [batch.md](foundation/modules/batch.md) · [interface.md](foundation/modules/interface.md) | 모듈 내부 구조 (해당 모듈을 수정할 때) |
-| [coding-rules.md](foundation/coding-rules.md) | 지침·기존 규칙·범용 규칙의 우선순위, Java 8 제약 |
+| [coding-rules.md](foundation/coding-rules.md) | **기존 구조 재사용 원칙**, 지침·기존 규칙·범용 규칙의 우선순위, Java 8 제약 |
 | [configuration.md](foundation/configuration.md) | application 파일, 프로필, 서비스 경로, 시크릿 |
 | [build-and-run.md](foundation/build-and-run.md) · [testing.md](foundation/testing.md) | 빌드·로컬 실행, 테스트 위치·실행 |
 | [commit-conventions.md](foundation/commit-conventions.md) | 커밋 위치·브랜치·메시지 (커밋할 때) |
@@ -39,6 +39,7 @@
 | 표 재조회·선택·행 추가·전체 선택 | [table/table-row-operations.md](cases/table/table-row-operations.md) | datatables-contract |
 | **엑셀 내려받기** | [table/excel-export.md](cases/table/excel-export.md) | datatables-contract |
 | 화면·코드에서 사전·코드·설정 값 사용 | [display-value/usage.md](cases/display-value/usage.md) | [display-values](reference/display-values.md) |
+| 값을 코드에 직접 쓸지 사전·코드·설정으로 뺄지 판단(화면 문구·옵션·날짜 형식·안내창·운영 값), 화면·코드 신규 작성 | [display-value/hardcoding-boundary.md](cases/display-value/hardcoding-boundary.md) | display-values |
 | 사용할 값이 미등록·미확인 | [display-value/temporary-value.md](cases/display-value/temporary-value.md) | display-values |
 | 작업 종료 시 값 등록 안내 (Admin / User) | [registration-admin.md](cases/display-value/registration-admin.md) / [registration-user.md](cases/display-value/registration-user.md) | display-values |
 | 사전·코드·설정·메뉴·권한의 DB 등록 여부·실제 값 확인, 테이블 컬럼 확인 | — (reference만) + [query-db 스킬](../skills/query-db/SKILL.md) | [db-lookup](reference/db-lookup.md) |
@@ -48,6 +49,7 @@
 | 포탈에서 백엔드 API 호출 추가 | — (reference만) | [backend-calls](reference/backend-calls.md) |
 | cmp에 새 REST API 추가·계약 변경 | [backend/cmp-new-api.md](cases/backend/cmp-new-api.md) | backend-calls, [data-access](reference/data-access.md) |
 | 새 DB 조회·저장 코드 (기술 선택) | [db/access-selection.md](cases/db/access-selection.md) → [jpa](cases/db/jpa.md) / [querydsl](cases/db/querydsl.md) / [mybatis](cases/db/mybatis.md) | data-access |
+| 테이블·컬럼 이름을 요청·설정으로 받아 DB 메타데이터로 동적 조회 | [db/dynamic-metadata-query.md](cases/db/dynamic-metadata-query.md) | data-access, [db-lookup](reference/db-lookup.md) |
 | DB 구현·리뷰 순서, 트랜잭션·검증 | [db/implementation.md](cases/db/implementation.md) | data-access |
 | 로그인·메뉴 권한·사용자별 데이터 범위 | — (reference만) | data-access |
 | 기존 기능 재사용·수정 영향 조사 | — (reference만) | [feature-map](reference/feature-map.md) → 해당 flows 문서 |

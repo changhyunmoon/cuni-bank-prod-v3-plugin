@@ -56,7 +56,8 @@ node <이 스킬>/scripts/db_query.mjs query --file <조회.sql> --limit 500
    - 머리 주석: 목적, 대상 DB, 작성일, 영향 화면·코드, 실행자 확인 사항
    - 실행 전 확인 SELECT (현재 상태)
    - `BEGIN;` → 변경문 → 확인 SELECT → `-- COMMIT;` / `ROLLBACK;` (기본은 ROLLBACK, 확인 후 사람이 COMMIT으로 바꾼다)
-   - 변경문은 다시 실행해도 안전하게 쓴다. 예: `INSERT ... ON CONFLICT (<PK>) DO NOTHING`, `UPDATE ... WHERE <PK> AND <현재 값>`
+   - 변경문은 다시 실행해도 안전하게 쓴다. 예: `INSERT ... SELECT ... FROM (VALUES ...) v WHERE NOT EXISTS (SELECT 1 FROM <테이블> t WHERE <키 일치>)`, `UPDATE ... WHERE <PK> AND <현재 값>`. 기본키 제약이 없는 DB가 있어 `ON CONFLICT`는 제약을 확인한 경우에만 쓴다.
+   - 화면 개발의 등록 값은 [테이블별 등록 SQL](../develop-screen-feature/references/registration.md) 형식(테이블 하나에 파일 하나, INSERT 하나)으로 만든다.
    - 되돌리는 SQL (주석)
 3. 사용자에게 파일 경로, 바뀌는 행 수 예상, 실행 후 할 일(캐시 갱신: [캐시 반영](../../docs/cases/display-value/cache-refresh.md))을 안내하고 "검토 후 직접 실행해 달라"고 요청한다. Admin 등록 화면으로 넣을 수 있는 값이면 그 경로도 함께 알린다.
 4. 사용자가 실행했다고 하면 `query`로 반영을 확인하고 결과를 보고한다. 실행 전에는 등록 완료로 보고하지 않는다.

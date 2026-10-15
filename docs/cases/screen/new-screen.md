@@ -31,7 +31,9 @@
 - 일반 요청은 `callAjax`, 저장 확인은 `saveData`, 알림은 `$.alert`, 닫기는 `closePopup`의 해당 모듈 구현을 먼저 확인한다.
 - 공통 스크립트가 이미 포함된 레이아웃에 jQuery·DataTables를 다시 넣지 않는다.
 - 함수 선택은 [DataTables 유형별 가이드](../table/table-setup.md), 요청·옵션은 [계약](../../reference/datatables-contract.md), 재조회·선택·행 변경은 [조작 가이드](../table/table-row-operations.md)를 따른다.
-- 문구·선택값은 [사전 사용법](../display-value/usage.md)을 따른다. 미등록이면 [임시값 바로 아래 실제 코드 주석](../display-value/temporary-value.md) 방식을 사용한다.
+- 문구·선택값은 [사전 사용법](../display-value/usage.md)을 따른다. 미등록이면 [임시값 바로 아래 실제 코드 주석](../display-value/temporary-value.md) 방식을 사용한다. 무엇을 하드코딩하지 않을지는 [하드코딩 경계](../display-value/hardcoding-boundary.md)를 따른다(안내창 문구·날짜 표시 형식 포함).
+- 공통 함수의 기본 동작(grid 기본 옵션, `callAjax` 기본 실패 안내, 엑셀 기존 방식)을 화면에서 재정의하지 않는다. 요구가 공통 동작과 다르면 구현 전에 사용자에게 공통 방식 대안을 먼저 묻는다([재사용 원칙](../../foundation/coding-rules.md)).
+- 새 템플릿은 admin `spring.thymeleaf.view-names`에 있는 기존 최상위 폴더 아래에 둔다([로컬 실행](../../foundation/build-and-run.md)).
 - 서버 데이터 표시는 기본적으로 `.text()`를 사용한다. `.html()`은 필요한 고정 마크업과 안전하게 처리한 값에만 사용한다.
 - 이벤트는 한 곳에서 한 번 등록한다. 같은 버튼에 ready의 click과 HTML onclick을 중복 연결하지 않는다.
 - 검증 실패 시 알림 후 `return`으로 후속 요청을 중단한다. 성공·실패·빈 결과를 나눠 처리한다.

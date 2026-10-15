@@ -21,7 +21,10 @@ model: inherit
 
 - 기존 CMP API의 실제 소스와 URL·메서드·요청/응답 필드·검색·정렬·페이징·권한을 확인한다. 이름 유사성만으로 재사용 가능하다고 하지 않는다.
 - 설계의 서버 호출 대응표를 승인된 `prototype.html`과 대조한다: `[프로토타입]` 함수가 모두 행으로 있는지, `searchData()` 반환 키·`columns.data`·샘플 필드가 API 요청·응답 필드와 같은지, 정렬 가능한 열의 `sortColumn`이 Support에서 처리되는지([시안의 서버 호출을 API 계약으로](../docs/cases/backend/screen-api-contract.md)).
-- POST 데이터 URL은 메뉴 권한 검사를 받지 않으므로([포탈 Controller·Proxy](../docs/cases/backend/portal-controller-proxy.md)) 권한·데이터 범위 검사 위치가 설계에 있는지 확인한다.
+- 권한은 [포탈 Controller·Proxy](../docs/cases/backend/portal-controller-proxy.md)의 기준으로 판정한다. 메뉴 권한은 기존 구조(GET 인터셉터, 팝업 GET은 메뉴 URL 아래)가 기준이며, POST에 메뉴 권한 검사가 없는 것 자체를 결함으로 올리지 않는다. 설계에 잔여 위험 한 줄이 있는지만 확인한다. 데이터 범위(프로젝트·사용자 소유) 검사가 필요한 조회·변경이면 CMP 검사 위치가 설계에 있는지 확인한다.
+- 실패 계약은 [CMP 오류 처리](../docs/cases/backend/cmp-new-api.md)의 두 경로를 기준으로 본다. 예외 경로는 HTTP 500 + 첫 `.`까지의 `description` → admin XHR 중계 → `callAjax` 기본 onFailed이고, 업무 실패 경로는 HTTP 200 + `success=false` → onSuccess 분기다. 화면이 두 경로를 모두 처리하는지, 마침표가 들어갈 수 있는 요청 값을 문구에 넣었는지 확인한다.
+- DB 접근 기술이 [선택 기준](../docs/cases/db/access-selection.md)의 재사용 순서를 따랐는지 확인한다. 앞 단계를 쓰지 않은 근거가 설계에 없거나 부정확하면 보고한다.
+- 페이징이 공통 구조(`createPageRequest`, MyBatis `createPageDto`+`MybatisPaginationUtil`, [MyBatis](../docs/cases/db/mybatis.md))를 쓰는지, 동적 식별자가 있으면 [동적 조회](../docs/cases/db/dynamic-metadata-query.md)의 식별자·정렬·NULL 처리 기준을 지키는지 확인한다.
 - 신규 API가 필요한 근거, 기존 API 확장의 호환성, 화면부터 저장소까지 파일별 책임과 연결 누락을 확인한다.
 - 서버 검증·오류 계약·프로젝트/사용자 데이터 범위·상태 전이·트랜잭션과 DB 변경 계획을 확인한다.
 - 코드 식별값·자료사전·설정의 재사용/신규/DB 미확인 구분, 등록·캐시 반영 계획을 확인한다. DB 조회 결과가 없으면 메인 Claude에게 [query-db](../skills/query-db/SKILL.md) 조회와 그 SQL·결과를 요청한다.
@@ -32,6 +35,8 @@ model: inherit
 - 화면 버튼 제어와 별도로 서버 권한·데이터 소유 범위가 검사되는지 확인한다. 입력·중복·허용 상태·오류 처리와 필요한 트랜잭션 경계를 확인한다.
 - fixture/mock 잔존과 API/DB 식별값 대신 표시 문구를 전달하는 문제를 찾는다.
 - 테스트 소스와 실제 실행 보고서를 대조한다. 단위 테스트, 빌드, 통합/실제 서버 검증을 구분하고 0건·skip을 통과 근거로 삼지 않는다.
+
+참고 기능에 없는 방어 코드(권한 검사, 허용값 제한, try/catch, 재검증)를 추가하라는 수정 제안은 내지 않는다. 그런 위험은 기존 프로젝트의 같은 구조 근거와 함께 `사용자결정` 잔여 위험으로 보고한다([검증 계약](../skills/develop-screen-feature/references/verification.md)). 새 코드가 만든 SQL 주입·데이터 손상·요구사항 위반은 그대로 P1·P2로 보고한다.
 
 업무 규칙을 알 수 없으면 결함으로 단정하지 말고 확인 필요로 반환한다. 재현 조건·소스 위치·영향·수정 제안과 필요한 재검증 시나리오를 공통 형식으로 보고한다. 테스트를 직접 실행한 것처럼 표현하지 않는다.
 

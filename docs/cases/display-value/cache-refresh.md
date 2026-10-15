@@ -9,6 +9,7 @@
 3. 다음 조회에서 CMP 전체 목록 API로 데이터를 다시 읽어 Admin 메모리에 보관한다. 시작 시 선조회도 있다.
 4. Thymeleaf가 캐시에서 문구·목록을 읽어 HTML·JavaScript에 넣는다. 이미 열린 화면은 다시 로드해야 한다.
 
+- **CMP 캐시는 저장으로 비워지지 않는다.** cmp `CodeService.saveCode`(112)는 캐시를 지우지 않고 `deleteCode`(148)만 `cacheManager.remove`를 호출한다. `/admin/codes/save`로 코드사전을 저장해도 CMP 서버 로직(`cacheManager.getCodeValue` 등)은 이전 값을 읽으므로, 서버가 읽는 값을 등록·수정했으면 레이아웃 [캐시 초기화]가 필요하다(CUNI-536 실행 확인, 2026-10-15).
 - 캐시는 서버 인스턴스의 메모리에 있다. 한 Admin에서 저장해도 다른 인스턴스·모듈이 동시에 갱신되지는 않는다.
 - `CacheBase`의 시간 만료 재조회는 주석 처리되어 있다. 기다리면 곧 반영된다고 가정하지 않는다.
 - 최종 레이아웃의 캐시 초기화 버튼은 `/admin/settings/refreshCacheButton`을 호출한다.

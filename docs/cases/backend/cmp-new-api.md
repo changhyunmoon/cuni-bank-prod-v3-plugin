@@ -28,8 +28,16 @@
 ## 오류 처리
 
 - 참고 기능의 방식을 따른다. 관찰된 방식은 저장·변경 메서드에서 try/catch로 원인 예외를 잡아 `BaseException(message, param.., cause)`로 다시 던지는 것이며(예: `cmp/controller/VmManagerController.java`의 `/save`), 목록 조회는 try/catch 없이 둔다. 메시지는 SLF4J 스타일 `{}` 플레이스홀더를 쓴다.
-- `GlobalExceptionHandler`가 `BaseException`과 그 외 `Exception`을 모두 잡아 HTTP 500 + `ResultData(success=false, description, exception=클래스명)`으로 응답한다.
-- 4xx로 구분되는 응답은 없다. 클라이언트 실패 판단은 HTTP status가 아니라 `ResultData.success`로 한다.
+- `GlobalExceptionHandler`가 `BaseException`과 그 외 `Exception`을 모두 잡아 HTTP 500 + `ResultData(success=false, description, exception=클래스명)`으로 응답한다. 4xx로 구분되는 응답은 없다.
+- `BaseException` 메시지는 `{}` 치환 후 **첫 `.`까지만** `description`이 된다(`GlobalExceptionHandler.java:67-68`). 사유는 `"…입니다(항목: {})."`처럼 한 문장으로 쓰고, 마침표가 들어갈 수 있는 요청 값(일시·소수·파일명)은 문구에 넣지 않는다. 그 밖의 `Exception`은 예외 메시지가 그대로 나간다.
+- 화면까지의 실패 경로는 두 가지다.
+
+  | 경로 | 발생 | 화면에서 받는 곳 |
+  |---|---|---|
+  | 예외 | CMP `BaseException`·기타 예외 → HTTP 500 → admin Proxy 예외 → admin `GlobalExceptionHandler`(93-111)가 XHR이면 CMP 응답 JSON을 500 그대로 중계 | `callAjax` onFailed. 기본 onFailed(`admin:static/js/common.js:306-316`)가 `description`을 안내한다. grid 목록은 공통 error 콜백의 고정 문구 |
+  | 업무 실패 | Service·Controller가 예외 없이 `setSuccess(false)` 후 HTTP 200 반환(`development` 기준 cmp 193곳, admin 61곳) | onSuccess에서 `data.success`가 false. `message`는 `setResultMessage`의 공통 오류 문구 |
+
+- 새 화면은 기존 화면과 같게 둘 다 처리한다. onSuccess에서는 `if (data.success)`로 분기하고(기존 admin 템플릿 약 300곳), 실패 시 `$.alert`로 `data.message`를 안내한다. 예외 경로는 기본 onFailed를 그대로 쓰며, 실패 시 화면 상태 복구가 필요할 때만 onFailed를 넘긴다(기본 처리와 같은 안내 + 복구).
 
 ## 입력 검증
 

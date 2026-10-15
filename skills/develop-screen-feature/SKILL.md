@@ -15,9 +15,11 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 1. **요청한 것만 만든다.** 사용자가 요청한 화면·기능·열·버튼만 요구사항과 구현에 넣는다. 요청에 없는 검증·옵션·상태·기본값·제한·보조 화면을 스스로 추가하지 않는다. 꼭 필요해 보이면 "제안"으로 한 줄 묻고, 사용자가 채택하기 전에는 구현하지 않는다.
 2. **기존 컨벤션을 그대로 따른다.** 같은 모듈·유형의 참고 화면과 기존 Controller·Proxy·Service·Support 코드의 구조, 명명, 공통 함수, 호출 방식, 오류 처리를 그대로 따른다. 기존 방식이 있으면 더 나아 보이는 새 방식(공통 함수 우회·재정의, 내부 API 사용, 새 계층·패턴)을 도입하지 않는다. 기존 방식으로 요청을 충족할 수 없을 때만 벗어나고, 그 이유를 승인 대상에 적는다.
-   - Controller·Service는 참고 기능과 같은 모양으로 둔다: 필요한 엔드포인트와 하위 계층 호출만. 참고 기능에 없는 권한 확인, try/catch 예외 변환, 입력 보정·재검증, 정의 조회용 추가 엔드포인트, 상수·헬퍼 메서드를 넣지 않는다. 페이징은 공통 `createPageRequest` 등 기존 공통 코드를 그대로 쓴다.
-3. **최소 구현.** 새 파일·클래스·API·DTO·설정 키는 요청을 충족하는 데 없으면 안 되는 것만 만든다. 기존 코드의 재사용·확장을 먼저 검토한다. 화면 표시에만 쓰는 값(열 제목·너비·표시 형식)은 화면에 두고, 백엔드는 조회·검증에 실제로 쓰는 값만 가진다. 같은 정보를 두 곳에 정의하지 않는다.
-4. **문서는 짧게.** 요구사항·설계·검증 문서는 판단에 필요한 만큼만 쓰고 같은 내용을 반복하지 않는다.
+   - Controller·Service는 참고 기능과 같은 모양으로 둔다: 필요한 엔드포인트와 하위 계층 호출만. 참고 기능에 없는 권한 확인, try/catch 예외 변환, 입력 보정·재검증, 정의 조회용 추가 엔드포인트, 상수·헬퍼 메서드를 넣지 않는다. 페이징은 공통 `createPageRequest`·`createPageDto`+`MybatisPaginationUtil` 등 기존 공통 코드를 그대로 쓴다.
+   - 사용자의 설계안·요청이 공통 방식과 다르면 **구현하기 전에** 공통 방식 대안을 결정 사항으로 먼저 제시한다(아래 1단계). 기준은 [기존 구조 재사용 원칙](../../docs/foundation/coding-rules.md)이다.
+3. **하드코딩하지 않는다.** 기존 프로젝트가 자료사전·코드사전·설정으로 관리하는 종류의 값(화면 문구·안내창 문구·select 옵션·코드 표시명·화면 날짜 표시 형식·운영자가 바꾸는 허용 목록·ID·주소)은 새 코드에서도 DB 값으로 조회한다. 미등록이면 임시값과 실제 조회 주석으로 둔다. 코드 상수는 기존 프로젝트도 코드에 두는 값(서버 날짜 해석 형식, datetimepicker 형식, 필드·키·자료형 이름, 서버 오류 문구)만 쓴다. 판단은 [하드코딩 경계](../../docs/cases/display-value/hardcoding-boundary.md)를 따른다.
+4. **최소 구현.** 새 파일·클래스·API·DTO·설정 키는 요청을 충족하는 데 없으면 안 되는 것만 만든다. 기존 코드의 재사용·확장을 먼저 검토한다. 화면 표시에만 쓰는 값(열 제목·너비·표시 형식)은 화면 쪽에 두고(문구·형식은 화면에서 사전 조회), 백엔드는 조회·검증에 실제로 쓰는 값만 가진다. 같은 정보를 두 곳에 정의하지 않는다.
+5. **문서는 짧게.** 요구사항·설계·검증 문서는 판단에 필요한 만큼만 쓰고 같은 내용을 반복하지 않는다.
 
 ## 시작과 재개
 
@@ -30,6 +32,16 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 ## 1. 요구사항 구체화
 
 대상 모듈의 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md))과 [참고 화면](../../docs/reference/screen-references.md), 관련 기존 화면·API([기능별 연결 지도](../../docs/reference/feature-map.md))를 확인해 요청을 실현 가능한 형태로 정리한다. 엑셀 내려받기처럼 케이스 문서가 데이터 범위를 정하는 기능은 그 기준을 요구사항의 완료 조건에 반영한다. 기간 검색이 있으면 [기간 검색 가이드](../../docs/cases/screen/period-search.md)의 A. 날짜 / B. 날짜·시간 중 하나와 기본 기간을 요구사항에 정한다. 요청에 없으면 추천안을 붙여 사용자 결정 사항으로 둔다. 새 화면의 메뉴 위치(상위 메뉴·형제 메뉴의 표시 순서·URL 형식)와 선택 목록에 쓸 기존 코드사전 카테고리는 DB 조회 결과를 추천안의 근거로 쓴다.
+
+**공통 구조 먼저 확인.** 요구사항을 쓰기 전에, 요청(사용자 설계안 포함)의 각 동작을 참고 화면·공통 함수가 이미 제공하는지 대조한다. 공통 방식과 다른 요구는 `requirements.md`의 사용자 결정 사항에 "공통 방식 대안(추천) / 요청대로 새로 구현(필요한 새 코드·위험)"으로 먼저 올린다. 자주 나오는 경우는 다음과 같다.
+
+| 요청 예 | 공통 방식 대안 | 기준 |
+|---|---|---|
+| 페이지 건수 '전체' 제외·건수 고정·건수 이어받기 | grid 기본 `pageLength`·`lengthMenu` 그대로 | [표 생성](../../docs/cases/table/table-setup.md) |
+| 엑셀 셀 서식·색·텍스트 셀·줄바꿈 보존 | 기존 `excelHtml5` 방식 + 표준 옵션(서식 포기) 또는 공통 함수 신설 | [엑셀](../../docs/cases/table/excel-export.md) |
+| 데이터 API에 메뉴 권한 검사 추가 | GET 인터셉터 메뉴 검사 + 팝업 GET을 메뉴 URL 아래에 둠 | [포탈 Controller](../../docs/cases/backend/portal-controller-proxy.md) |
+| 화면 고유 실패 처리·문구 | 기존 화면처럼 onSuccess의 `data.success` 분기 + `callAjax` 기본 onFailed, 서버 사유는 CMP `BaseException` 문구 | [CMP 오류 처리](../../docs/cases/backend/cmp-new-api.md) |
+| 화면 문구·옵션·형식을 코드에 고정 | 자료사전·코드사전·설정 조회 | [하드코딩 경계](../../docs/cases/display-value/hardcoding-boundary.md) |
 
 `requirements.md`에 대상 모듈·화면 URL, 요청한 검색·열·버튼·동작, 요구사항 ID(R-01…)와 완료 조건, 제외 범위, 사용자가 정해야 할 사항만 짧게 쓴다. 요청을 해석하며 채운 부분과 제안은 구분해 표시한다.
 
@@ -47,6 +59,8 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 1. **작업 기준**: 모듈마다 현재 브랜치와 작업 관련 feature 브랜치·이전 커밋을 확인하고, 구현할 브랜치를 정한다. 이전 작업이 있으면 재사용·참고·무관을 판단해 적는다.
 2. **참고 기능 추적**: 디자인 기준 화면의 Controller부터 화면 → 포탈 Controller → Proxy → CMP Controller/Service/Support → DB를 따라가고, 그 구조를 그대로 복제하는 설계를 만든다. 문서는 선택한 케이스 중 [포탈 Controller·Proxy](../../docs/cases/backend/portal-controller-proxy.md), [포탈 호출](../../docs/reference/backend-calls.md), [CMP 새 API](../../docs/cases/backend/cmp-new-api.md), [DB 기술 선택](../../docs/cases/db/access-selection.md), [데이터 접근](../../docs/reference/data-access.md)에서 필요한 것만 읽는다. DB 계층은 엔티티만 보지 말고 query-db의 `columns`로 실제 테이블 컬럼을 확인하고 차이를 적는다.
+   - **DB 접근 기술은 재사용 순서로 고른다**([선택 기준](../../docs/cases/db/access-selection.md)): ① 같은 테이블의 기존 Repository·Support·DAO → ② 기존 엔티티 + JPA·QueryDSL Support 추가 → ③ 대상 테이블이 실행 중에 정해지면 JPA 메타모델 + `PathBuilder` 또는 MyBatis([동적 조회](../../docs/cases/db/dynamic-metadata-query.md)) → ④ SQL 중심 집계·DB 함수는 MyBatis([공통 페이징 구조](../../docs/cases/db/mybatis.md)). 앞 단계를 쓰지 않는 이유와 탈락한 대안을 설계 9절에 적고, 승인 요청 때 사용자에게 함께 보인다.
+   - 권한은 기존 구조(메뉴 권한은 GET 인터셉터)를 쓰고, 데이터 범위 검사가 필요한 경우만 CMP 검사 위치를 적는다. 실패 동작은 공통 실패 계약(예외 → HTTP 500 + `description` → 기본 onFailed / 업무 실패 → HTTP 200 + `success=false` → onSuccess 분기)으로 적는다.
 3. **서버 호출 대응표·API 계약**: 승인된 `prototype.html`의 `[프로토타입]` 함수를 [시안의 서버 호출을 API 계약으로](../../docs/cases/backend/screen-api-contract.md)대로 빠짐없이 API에 대응시킨다. 시안의 요청 키·응답 필드 이름이 계약이다. 기존 API와 이름이 다르면 시안을 고칠 대상으로 적는다.
 4. **파일·사용 값**: 모듈별 생성·수정 파일과 필요한 이유, 사용할 자료사전·코드사전·설정 값의 용도(표시/서버 로직)와 등록 여부, 새 화면이면 등록할 메뉴. 등록 여부는 DB 조회 결과로 채우고, 메뉴는 상위 메뉴 ID·표시 순서를 DB에서 확인해 적는다. 등록 자체는 구현 범위가 아니며 5단계에서 안내한다.
 5. **검증 계획**: 빌드, 테스트 추가 여부, 요구사항별 실제 서버 시나리오, 로컬 검증에 필요한 데이터·등록 값([서버 로직이 읽는 값](../../docs/cases/display-value/temporary-value.md#서버-로직이-읽는-코드설정-값))과 시나리오에 필요한 데이터가 DB에 있는지(조건별 건수) 조회한 결과, 시안과 다시 비교할 화면.
@@ -56,7 +70,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 4. 구현
 
-승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 선택한 케이스 문서의 구현 순서와 "복사하지 않을 기존 패턴"을 따른다. 실제 템플릿은 승인된 프로토타입의 본문 마크업과 script를 옮겨 참고 화면과 같은 레이아웃·fragment 구조로 작성한다. 옮길 때 `[프로토타입]` 서버 대체 함수와 샘플 데이터는 공통 함수(`grid`·`callAjax`·`saveData`·`showPopup` 등) 호출로, 직접 초기화한 DataTable은 같은 옵션의 공통 grid 호출로, `<template>` 팝업은 `popup_layout*`을 쓰는 별도 템플릿과 같은 크기의 `showPopup` 호출로 바꾸고, 인라인 언어·자원 보정은 지우며, 한글 문구는 자료사전 조회로, `코드사전:`·`자료사전:` 표시가 붙은 선택 목록·코드 표시는 `getCode`·`getDicList`·`getRenderCode` 조회로 바꾼다. 하드코딩한 옵션·코드 표시명을 남기지 않는다. 옮기는 과정에서 시안에 없던 클래스·style·요소를 더하지 않고, 완료 전에 [일관성 점검표](../../docs/cases/screen/consistency-check.md#점검표)로 실제 템플릿을 확인한다.
+승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 선택한 케이스 문서의 구현 순서와 "복사하지 않을 기존 패턴"을 따른다. 실제 템플릿은 승인된 프로토타입의 본문 마크업과 script를 옮겨 참고 화면과 같은 레이아웃·fragment 구조로 작성한다. 옮길 때 `[프로토타입]` 서버 대체 함수와 샘플 데이터는 공통 함수(`grid`·`callAjax`·`saveData`·`showPopup` 등) 호출로, 직접 초기화한 DataTable은 같은 옵션의 공통 grid 호출로, `<template>` 팝업은 `popup_layout*`을 쓰는 별도 템플릿과 같은 크기의 `showPopup` 호출로 바꾸고, 인라인 언어·자원 보정은 지우며, 한글 문구는 자료사전 조회로, `코드사전:`·`자료사전:` 표시가 붙은 선택 목록·코드 표시는 `getCode`·`getDicList`·`getRenderCode` 조회로 바꾼다. 하드코딩한 옵션·코드 표시명을 남기지 않는다. 안내창(`$.alert`·`$.confirm`) 문구와 화면 날짜 표시 형식(`Format.Date`·`Format.DateTime`)도 자료사전으로 읽고, grid `pageLength`·`lengthMenu`·`language`와 `callAjax` 기본 실패 처리를 재정의하지 않는다([하드코딩 경계](../../docs/cases/display-value/hardcoding-boundary.md)). 옮기는 과정에서 시안에 없던 클래스·style·요소를 더하지 않고, 완료 전에 [일관성 점검표](../../docs/cases/screen/consistency-check.md#점검표)로 실제 템플릿을 확인한다.
 
 값의 등록 여부와 새 화면의 메뉴·권한 구성은 [query-db](../query-db/SKILL.md)로 DB를 조회해 확인한다. 자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다. SQL이 필요하면 query-db의 검토용 SQL로만 제공한다. 새로 쓴 조회 SQL(MyBatis XML·네이티브 쿼리)은 파라미터를 예시 값으로 채워 query-db로 실행하거나 `EXPLAIN`해 컬럼·문법을 확인할 수 있다. 쓰기 SQL은 실행하지 않고 실제 서버 시나리오로 검증한다.
 
@@ -64,13 +78,20 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 5. 검증과 완료
 
-[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목과 설계의 검증 계획 시나리오를 하나씩 결과로 남긴다. 구현한 화면은 로컬 서버에서 승인된 시안과 다크·화이트 두 테마로 나란히 비교한다(방법은 [prototype-screen의 실제 화면 비교](../prototype-screen/SKILL.md#실제-화면-비교) 4~8단계, 서버를 띄울 수 없으면 VPN 안내 후 대기). 남은 차이는 샘플 데이터와 실제 데이터의 차이뿐이어야 한다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다. 사용자가 값을 등록했다고 하면 등록 결과는 로컬 화면 표시(캐시 초기화 후)로 확인한다. query-db는 개발 서버 DB의 사본을 읽으므로 새로 등록한 값이 보이지 않는다.
+[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목과 설계의 검증 계획 시나리오를 하나씩 결과로 남긴다. 구현한 화면은 로컬 서버에서 승인된 시안과 다크·화이트 두 테마로 나란히 비교한다(방법은 [prototype-screen의 실제 화면 비교](../prototype-screen/SKILL.md#실제-화면-비교) 4~8단계, 서버를 띄울 수 없으면 VPN 안내 후 대기). 남은 차이는 샘플 데이터와 실제 데이터의 차이뿐이어야 한다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다. 로컬 실행은 cmp → admin 순서로 띄우고, 고친 템플릿이 실행 중 서버가 읽는 `build/resources/main`에 반영됐는지, 서버가 읽는 코드사전·설정을 바꿨으면 [캐시 초기화]를 했는지 확인한다([로컬 실행](../../docs/foundation/build-and-run.md), [화면 검증 시 주의](../../docs/foundation/testing.md)). 사용자가 값을 등록했다고 하면 등록 결과는 로컬 화면 표시(캐시 초기화 후)로 확인한다. query-db는 개발 서버 DB의 사본을 읽으므로 새로 등록한 값이 보이지 않는다.
 
-완료 보고는 변경 파일, 검증 결과, 그리고 아래 **등록 안내**로 구성한다. 등록 안내는 항상 제공한다.
+완료 보고는 변경 파일, 검증 결과, 기존 방식으로 안 되어 새로 만든 부분과 그 이유, 그리고 아래 **등록 안내**로 구성한다. 등록 안내는 항상 제공한다.
 
 ### 등록 안내
 
-사용자가 그대로 따라 등록할 수 있게 표로 제공한다. 해당 없는 항목은 "없음"으로 적는다.
+사용자가 그대로 따라 등록할 수 있게 [등록 값 목록과 테이블별 등록 SQL](references/registration.md)대로 만든다. 순서는 다음과 같다.
+
+1. 코드의 `[임시값]`·조회 코드와 설계 6절을 대조해 등록할 값을 모은다. **모든 키가 DB에 이미 저장되어 있는지 query-db로 반드시 조회**한다. 같은 키 존재, 값이 다른 경우, 같은 문구의 다른 키, 메뉴 ID·URL 중복을 확인하고, 이미 있는 값은 목록·SQL에서 뺀다. 조회 근거는 작업 폴더에 남긴다.
+2. **DB 테이블별 표**(자료사전 → 코드사전 → 설정 → 메뉴 → 메뉴 이름 → 권한 그룹별 메뉴)로 등록할 값을 보여 준다.
+3. **테이블마다 한 번에 등록하는 SQL 파일**(`outputs/<작업>/db/NN-<테이블>.sql`, INSERT 1개, 다시 실행해도 안전, 기본 `ROLLBACK`)을 만들어 경로와 예상 건수를 안내한다. SQL은 직접 실행하지 않는다.
+4. 실행 후 할 일(캐시 초기화, 메뉴는 재로그인, 임시값 전환, 화면 재확인)을 안내한다.
+
+Admin 화면으로 등록할 때의 입력 항목은 아래와 같다. 해당 없는 항목은 "없음"으로 적는다.
 
 | 구분 | 어디서 | 무엇을 |
 |---|---|---|
@@ -79,7 +100,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 | 코드사전 | `/admin/codes/save` | 카테고리 / 이름(API·DB 식별값) / 언어별 값 / 순서 / 사용 여부 Y |
 | 설정 | `/admin/configurations/save` | 카테고리 / 이름 / 값 / 설명 |
 
-- 각 행은 DB 조회로 확인한 현재 상태(`확인됨 / 미등록 / 확인 필요`, 조회한 DB)를 함께 적는다. 사용자가 SQL을 원하면 [검토용 SQL](../query-db/SKILL.md#쓰기가-필요할-때) 파일 경로를 덧붙인다.
+- 각 행은 DB 조회로 확인한 현재 상태(`확인됨 / 미등록 / 확인 필요`, 조회한 DB)를 함께 적는다. 테이블별 SQL 파일 경로를 항상 덧붙인다.
 - 등록 후 Admin 캐시 초기화(`/admin/settings/refreshCacheButton`)와 화면 재로드가 필요하다([캐시 반영](../../docs/cases/display-value/cache-refresh.md)).
 - 임시값을 넣은 곳은 `[임시값]` 표식 위치와 전환 방법(임시값 삭제, 아래 주석 해제)을 함께 적는다([등록 안내 형식](../../docs/cases/display-value/temporary-value.md)).
 - User 화면의 메뉴도 같은 Admin 메뉴관리에서 적용 대상 `UserPortal`로 등록하고, 사전 값은 [User 등록 가이드](../../docs/cases/display-value/registration-user.md)대로 등록·반영한다.

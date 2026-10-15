@@ -40,4 +40,5 @@
 화면·JS 근거: `admin:src/main/resources/templates/batchtask/list.html`, `admin:src/main/resources/static/js/common.js`의 `getCode`.
 - 위 예시 키(`Title / BatchTask`, `Term / Name`, `YesNo`, `SearchConditionHeader / AllStatus`)는 개발 DB 사본에 있다. `Title / BatchTask`는 `ko-KR` 값만 있다.
 - 쓰려는 키의 등록 여부는 [DB 조회 지도](../../reference/db-lookup.md)로 확인한다.
+- 어떤 값을 DB로 빼고 어떤 값을 코드에 둘지는 [하드코딩 경계](hardcoding-boundary.md)를 따른다.
 - 관련: [등록](registration-admin.md), [미등록 값 개발](temporary-value.md).

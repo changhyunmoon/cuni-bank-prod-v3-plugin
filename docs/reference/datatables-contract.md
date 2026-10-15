@@ -29,6 +29,7 @@
 - 공통 기본 계약은 content 배열과 정확한 totalElements를 반환하는 형태로 맞춘다. 배열 fallback을 모든 함수의 보장된 지원으로 간주하지 않는다.
 - `exGrid`의 주석은 no paging/no ordering이지만 Admin 기본 `bPaginate`는 true이고 양쪽 모두 `ordering: false`가 없다. 전체 목록 UI가 필요하면 직접 지정한다.
 - `grid`의 전체 길이 옵션도 큰 요청을 발생시킨다. UI의 전체 선택과 전체 서버 데이터 조회는 별개다.
+- cmp는 페이지 건수 허용값을 검사하지 않는다. 공통 `createPageRequest`가 `length`를 그대로 쓴다(`cmp:common/controller/ApiController.java:194`). 큰 테이블의 '전체' 조회는 MyBatis `default-statement-timeout: 30`(`application-datasource.yml:21`)에만 의존하는 잔여 위험이다. 새 API도 다른 API와 같게 별도 허용값 검사를 두지 않는다(2026-10-15 사용자 결정). 위험은 설계에 한 줄 적는다.
 
 ## 옵션 확장 시 주의
 
@@ -36,6 +37,7 @@
 - `ajax` 일부만 넘기면 POST·토큰·검색·응답 변환까지 사라질 수 있다. 먼저 기존 계약에 API를 맞출 수 있는지 확인한다.
 - 5번째 `callback`은 `ajax.success`에 연결된다. 일반적인 “렌더 완료 콜백”으로 사용하지 않는다. 래핑된 DataTables 내부 처리와 충돌 여부를 확인한다.
 - 새 화면은 `initComplete`·`drawCallback` 등 목적에 맞는 훅을 쓰되, initComplete 대체 시 기본 길이 선택 처리도 대체됨을 안다.
+- 공통 initComplete(`datatables.ex.js:50-63`)는 `pageLength`가 10이 아니면 같은 값의 option을 길이 select 앞에 하나 더 넣고, `lengthMenu`에 '전체'(`CONSTANTS.INT_MAX`)가 없으면 '전체'를 덧붙인다. 표를 destroy 후 다시 만들면서 이전 건수를 `pageLength`로 넘기면 option이 중복된다. 재생성할 때는 건수를 이어받지 않고 기본값으로 돌아가게 둔다.
 - 언어 URL은 Admin `/admin/js/datatables/cultures/Korean.json`, User `/user/js/datatables/cultures/Korean.json`이다.
 - 공통 그리드 오류 알림은 User에서 `xhr.responseJSON` 존재 조건이 있다. 모든 네트워크 실패에 안내가 표시된다고 가정하지 않는다.
 

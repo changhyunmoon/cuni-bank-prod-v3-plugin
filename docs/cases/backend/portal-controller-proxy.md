@@ -23,7 +23,9 @@
 | 구분 | 규칙 |
 |---|---|
 | 관찰 | 메뉴 권한 검사는 `CheckSessionInterceptor`가 **GET 요청**에만, 등록된 메뉴 URL과 같거나 그 URL로 시작할 때만 한다. POST 데이터 URL은 세션 존재만 확인한다. 등록된 메뉴 URL은 `menu_tp.menuurl`이며, 같은 URL이 이미 있는지 [DB 조회](../../reference/db-lookup.md)로 확인한다. |
-| 지침 | 데이터 범위·권한이 필요한 조회·변경은 화면·메뉴 권한에 기대지 말고 CMP에서 검사하는지 설계에 적는다. |
+| 관찰 | POST에서 메뉴 권한을 확인하는 Controller는 0곳이다(`development`). `NoAuthException`은 정의만 있고 던지는 곳이 없으며 403 응답도 없다. 메뉴 URL과 일치하지도, 그 URL로 시작하지도 않는 GET은 검사 없이 통과한다. |
+| 지침 | **메뉴 권한은 기존 구조를 그대로 쓴다**(2026-10-15 사용자 결정, CUNI-536 D-7). 새 화면도 Controller에 별도 메뉴 권한 검사를 넣지 않는다. 팝업 GET 주소는 메뉴 URL 아래(`/<메뉴경로>/list/<팝업>`, 예: `/datamonitoring/list/column-popup`)에 두어 인터셉터의 `startsWith` 메뉴 검사를 받게 한다. 메뉴 권한 없는 관리자도 POST를 직접 호출할 수 있는 위험은 admin 전체와 같은 수준으로 받아들인 것이며, 설계에 잔여 위험으로 한 줄 적는다. |
+| 지침 | 데이터 범위(요청자가 그 프로젝트·사용자 데이터를 다뤄도 되는가)가 필요한 조회·변경은 메뉴 권한과 별개다. 이 경우만 CMP에서 검사하는지와 검사 위치를 설계에 적는다([데이터 접근](../../reference/data-access.md)). |
 | 관찰 | 같은 Client 안에서 키 이름은 `<리소스>-<동작>` 케밥 표기(`vm-managers-list`)다. |
 | 관찰 | 화면 경로와 CMP 경로는 이름이 달라도 된다(`/monitoring/vm-manager-managements/list` → `/cmp/vm-managers/list`). |
 

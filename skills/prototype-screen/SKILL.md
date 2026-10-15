@@ -18,6 +18,7 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 5. **요소별 근거 표를 먼저 만든다.** 작성 전에 만들 요소(검색 줄·기간·select·버튼·표·팝업·팝업 안 입력·빈 결과·알림)마다 복사할 근거 파일:줄을 [일관성 맞추기](../../docs/cases/screen/consistency-check.md#작성-순서)의 표 형식으로 진행 기록에 남긴다. 근거가 없는 요소는 만들기 전에 사용자에게 제안해 확정한다.
 6. **DB 값은 조회해서 쓴다.** 메뉴 이름·문구·선택 목록처럼 DB로 관리하는 값은 [query-db](../query-db/SKILL.md)로 확인한다(아래 각 항목). 접속하지 못하면 해당 값을 `미확인`으로 표시하고 진행하며, 제출 때 알린다.
 7. **요청한 것만 만든다.** 요청에 없는 기능·옵션·기본값(기본 기간 등)·제한을 넣지 않는다. 필요해 보이면 "제안"으로 묻는다.
+8. **기존 구조를 먼저 쓴다.** 사용자 설계안이 공통 방식과 다르면(페이지 건수 '전체' 제외, 엑셀 셀 서식·색, 화면 고유 실패 문구 등) 시안에 넣기 전에 공통 방식 대안을 추천안으로 붙여 묻는다. 공통 방식으로 안 되는 부분만 새로 만든다([기존 구조 재사용 원칙](../../docs/foundation/coding-rules.md)).
 
 ## 작성
 
@@ -42,7 +43,7 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 - 버튼 비활성 모양, 표 밖 안내 영역, 프로토타입 전용 토글·URL 파라미터·설명 문구를 만들지 않는다. 지금 할 수 없는 동작은 누를 때 `$.alert`로 알리고, 정해지지 않은 동작은 토글로 두지 말고 사용자에게 묻는다.
 - 새 클래스·새 인라인 style·별도 `<style>` 규칙을 만들지 않는다. 표준에 없는 표현이 필요하면 참고 화면 → 같은 모듈 기존 화면 순서로 찾고, 그래도 없으면 사용자에게 제안해 확정한 뒤 사용하고 제출 시 카탈로그 추가 대상으로 알린다.
 - 기간 검색이 있으면 [기간 검색 가이드](../../docs/cases/screen/period-search.md)의 **A. 날짜** 또는 **B. 날짜·시간** 중 하나로만 만든다. 요구사항(`requirements.md`)에 정해진 방식을 쓰고, 정해지지 않았으면 작성 전에 가이드의 기준으로 추천안을 붙여 사용자에게 둘 중 하나를 고르게 한다. 고른 방식의 마크업·달력 초기화·기본 기간·시작>종료 검증을 그대로 넣고, 선택한 방식을 제출 시 함께 알린다.
-- 문구는 화면에 보일 한글을 쓰고, 기존 자료사전에 같은 용도의 값이 있으면 그 값과 같게 쓴다. 같은 값이 있는지는 DB에서 문구로 검색해 확인하고([조회 예](../../docs/reference/db-lookup.md#대표-조회)), 찾은 카테고리·이름을 진행 기록의 사용 값 목록에 남겨 구현에서 그 키로 바꾸게 한다.
+- 문구는 화면에 보일 한글을 쓰고, 기존 자료사전에 같은 용도의 값이 있으면 그 값과 같게 쓴다. 같은 값이 있는지는 DB에서 문구로 검색해 확인하고([조회 예](../../docs/reference/db-lookup.md#대표-조회)), 찾은 카테고리·이름을 진행 기록의 사용 값 목록에 남겨 구현에서 그 키로 바꾸게 한다. `$.alert`·`$.confirm` 안내 문구와 빈 결과 문구도 같은 대상이다. 화면 날짜 표시 형식은 자료사전 `Format.Date`·`Format.DateTime` 값(`YYYY-MM-DD`·`YYYY-MM-DD HH:mm`)과 같게 쓰고, datetimepicker 입력 형식(`'Y-m-d H:i'`)만 코드에 둔다([하드코딩 경계](../../docs/cases/display-value/hardcoding-boundary.md)).
 - 선택 목록·상태 표시처럼 값이 정해진 항목(테마 포함)은 코드사전 값으로 관리되는 것으로 만든다. 옵션의 value·표시명은 기존 코드사전 키·값과 같게 쓰고, 요소 바로 위에 `<!-- 코드사전: <category> -->`(검색 항목은 `<!-- 자료사전: <category> -->`)를 남겨 구현에서 `getCode`·`getDicList`로 바꾸게 한다. 기존 키·값은 [query-db](../query-db/SKILL.md)로 DB에서 확인한다. 기존 값이 없거나 확인하지 못했으면 `미등록`을 함께 적고 제출 시 등록이 필요한 값으로 알린다([사전 사용법](../../docs/cases/display-value/usage.md), [미등록 값](../../docs/cases/display-value/temporary-value.md)). 코드 분기는 표시명이 아닌 코드 키로 한다.
 
 ### 다크·화이트 테마
@@ -57,7 +58,7 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 
 ### 표
 
-- 실제로 쓸 공통 함수(`grid`·`exGrid`·`emptyGrid` 등, [DataTables 선택](../../docs/cases/table/table-setup.md))의 옵션을 `datatables.ex.js`에서 그대로 가져와 `$(selector).DataTable(...)`로 초기화한다. pageLength·pagingType·dom·lengthMenu·select·order·colResize 등 표시 옵션을 바꾸거나 빼지 않는다.
+- 실제로 쓸 공통 함수(`grid`·`exGrid`·`emptyGrid` 등, [DataTables 선택](../../docs/cases/table/table-setup.md))의 옵션을 `datatables.ex.js`에서 그대로 가져와 `$(selector).DataTable(...)`로 초기화한다. pageLength·pagingType·dom·lengthMenu·select·order·colResize 등 표시 옵션을 바꾸거나 빼지 않는다. 엑셀은 [기존 화면 방식](../../docs/cases/table/excel-export.md)(excelHtml5 + 버튼 숨김 + 화면 버튼 trigger)으로 만들고 `customize`를 쓰지 않는다.
 - 서버 페이징 옵션만 `bServerSide: false`, `ajax` 대신 `data: <샘플 행>`으로 바꾼다. 샘플 행은 페이징·정렬·말줄임·빈 결과를 확인할 만큼 넣는다. 기존 테이블의 데이터를 보여 주는 화면이면 DB에서 소량 조회해 값의 형식(길이·코드 값·날짜 형식·빈 값)을 맞춘다. 조회한 값을 그대로 옮기지 않고, 사용자명·IP·계정·자원명 같은 식별 정보는 가짜 값으로 바꾼다.
 - 화면에서 추가하는 옵션(`columns`, `columnDefs`, 선택 방식 등)은 실제 구현에서 공통 함수에 넘길 값과 같게 둔다.
 - 샘플 행 필드명(`columns.data`)과 `searchData()` 반환 키는 실제 API의 응답·요청 필드 이름으로 쓴다. 기존 API를 쓸 화면이면 그 API의 필드명, 새 API면 참고 API의 이름 방식(예: DB 컬럼명 소문자 `vmname`)을 따른다. 구현 설계가 이 이름을 그대로 계약으로 쓴다([시안의 서버 호출을 API 계약으로](../../docs/cases/backend/screen-api-contract.md)).

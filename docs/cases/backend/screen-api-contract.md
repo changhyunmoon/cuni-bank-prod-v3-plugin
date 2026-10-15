@@ -22,7 +22,7 @@
 3. 요청 키는 `searchData()`의 반환 키, 응답 필드는 시안 `columns.data`와 샘플 행의 필드명이다. 기존 API를 재사용하면 그 API의 이름을 따르고, 시안의 이름이 다르면 **시안을 고친다**(새 매핑 코드를 만들지 않는다).
 4. 서버 표는 공통 grid가 붙이는 키(`page`, `length`, `searchList`, `sortColumn`, `sortOrderType`)를 그대로 받는다. CMP는 `createPageRequest(param)`로 페이지·정렬을 만든다.
 5. 정렬 연결을 한 줄로 적는다: Admin grid는 `columns.name`(없으면 `columns.data`)을 `sortColumn`으로 보냄 → `createPageRequest`가 `Sort.Order(direction, sortColumn)` 생성 → Support가 그 이름을 실제 정렬 필드로 처리. 정렬할 수 없는 열은 화면에서 `orderable: false`.
-6. 응답은 `ResultData.result`에 `{content, totalElements}`(서버 표) 또는 배열·객체(그 밖)로 둔다. 실패 판단은 `success`.
+6. 응답은 `ResultData.result`에 `{content, totalElements}`(서버 표) 또는 배열·객체(그 밖)로 둔다. 실패는 두 경로다. 예외는 HTTP 500 + `description`으로 와서 `callAjax` 기본 onFailed가 안내한다. 업무 실패는 HTTP 200 + `success=false`로 와서 onSuccess의 `data.success` 분기에서 처리한다. 화면은 기존 화면처럼 둘 다 처리한다([CMP 오류 처리](cmp-new-api.md#오류-처리)).
 
 ## 규칙
 

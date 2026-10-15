@@ -30,6 +30,12 @@ gradle bootRun '--args=--spring.profiles.active=local' @gradleArgs
 - cmp의 JavaCompile은 fork 실행하며 `-Xmx4g`, `-XX:MaxMetaspaceSize=3600m` 옵션이 있다.
 - 확인한 `pipeline/.gitlab-ci-dev.yml`·`.gitlab-ci-prg.yml`에는 `gradle init` 후 `gradle build`가 있다.
 - CI 진입점은 `.gitlab-ci.yml`의 분기별 include다. 이 사실만으로 로컬에서 `gradle init`을 실행하지 않는다.
+## 로컬 실행 시 확인할 점 (admin, 2026-10-15 실행 확인)
+
+- **기동 순서는 cmp → admin**이다. admin은 기동 시 `SettingController`의 `@PostConstruct`(`settingsStart`)에서 자료사전·코드·설정 캐시를 cmp에서 받아 오므로 cmp가 없으면 기동이 실패한다.
+- 실행 중인 admin은 `build/resources/main`의 템플릿을 읽는다(`application.yml`의 `spring.thymeleaf.cache: false`). `src/main/resources/templates`를 고친 것만으로는 화면에 반영되지 않으므로 다시 빌드하거나 같은 파일을 `build/resources/main`에도 반영한다.
+- `spring.thymeleaf.view-names`(`application.yml:18-24`)에 있는 최상위 폴더(`monitoring/*`, `system/*` 등)의 템플릿만 렌더링된다. 새 템플릿은 기존 폴더 아래에 두고, 새 최상위 폴더가 필요하면 이 목록에 추가해야 한다.
+
 - 성공 기준: 빌드 산출물 생성 또는 해당 프로필의 기동 확인. 의존 서비스·설정은 모듈별로 추가 확인한다.
 - 실패 시: Gradle/JDK → Nexus 접근·인증 → 인증서 → QueryDSL 생성 → 테스트 실행 설정 순으로 원인을 좁힌다.
 

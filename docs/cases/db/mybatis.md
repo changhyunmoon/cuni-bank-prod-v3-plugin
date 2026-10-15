@@ -26,6 +26,7 @@
 - SELECT 컬럼과 INSERT 대상 컬럼을 명시한다. 샘플의 `SELECT *`·컬럼 없는 INSERT를 신규 기준으로 삼지 않는다.
 - 결과 타입·별칭·resultMap을 확인한다. 특히 interface는 camelCase 자동 변환을 기대하지 않는다.
 - 페이지 조회는 SQL의 limit·offset과 동일 필터의 count를 작성한다. Page 객체로 감싸기만 해서는 SQL에 페이징이 생기지 않는다.
+- **MyBatis를 쓰기로 정한 경우, cmp 페이징은 공통 구조를 먼저 쓴다**(지침, 2026-10-15). 엔티티 목록·검색 페이징은 MyBatis가 아니라 QueryDSL Support가 기본이다([선택 기준](access-selection.md)). 구조: 요청 DTO가 `common/model/Pagination`을 상속 → Controller `createPageDto(param, new XxxReqDto(), 기본정렬컬럼, 방향)`(`ApiController`) → DAO `MybatisPaginationUtil.getPage(reqDto, sqlSessionTemplate, 쿼리ID, count)`. XML은 `LIMIT #{pageSize} OFFSET #{offset}`, 정렬은 `<foreach collection="sort">` 안에서 `order.property`를 `<choose>`로 실제 컬럼에 대응시킨다(`AwsEc2Mapper.xml:382-`). Service에서 `PageImpl`을 직접 조립하는 것은 동적 컬럼처럼 DTO로 표현할 수 없을 때만이다([동적 조회](dynamic-metadata-query.md)).
 - 집계는 시간 단위·타입 변환·NULL·중복 조인·인덱스 사용을 검증한다.
 - 일괄 입력은 빈 목록을 먼저 처리하고, 건수·파라미터 한도에 맞춰 분할한다.
 - UPDATE·DELETE는 필수 조건과 영향 건수를 확인한다. 전체 삭제 후 재적재는 의도·실패 복구·트랜잭션을 별도 설계한다.
@@ -35,6 +36,7 @@
 ## 참고할 실제 구현
 
 - 집계: `cmp:src/main/java/kr/datasolution/cuni/cmp/repository/AwsEc2UsgDao.java`와 `src/main/resources/mapper/cmp/AwsEc2UsgMapper.xml`.
+- 공통 페이징: cmp `AwsBucketController`(`createPageDto`) → `AwsBucketDao`, 같은 구조의 `AwsEc2Dao`·`AwsResourceStatusDao`·`TaskItemDao`·`VmListDao`(5곳). 기준 `common/util/MybatisPaginationUtil.java`, `common/model/Pagination.java`.
 - 일괄 입력 구조: `batch:src/main/java/kr/datasolution/cuni/sample/repository/BatchSampleDao.java`와 `src/main/resources/mapper/sample/BatchSampleMapper.xml`.
 - Mapper 인터페이스: `interface:src/main/java/kr/datasolution/cuni/cmpinterface/repository/ApprCntMapper.java`와 `src/main/resources/mappers/cmpinterface/apprcntMapper.xml`.
 - 설정 근거: 각 모듈 `src/main/resources/application-datasource.yml`.
