@@ -103,7 +103,7 @@ User — 참고 화면 `k8s/workloadList.html:100-117`
 | 상세 | 표 위 오른쪽 | `a.btn-type1.detail.js-open` | 참고 화면 `task/viewprogresscreatek8snamespace.html` |
 | 엑셀 내보내기 | `head_optionRight` 맨 끝 | `a.btn-type5.export` (확정), 문구는 자료사전 `Term.Export`("내보내기") | `monitoring/vmManagerManagement/list.html:558-560` 외. 동작은 [엑셀 표준](../cases/table/excel-export.md) |
 | 팝업 닫기(하단) | `popup-foot` | `button.btn-type2.js-close` | `cloud/projectmember/save.html:186` |
-| 팝업 저장(하단) | `popup-foot` | `input[type=submit].btn-type2.blue` 또는 `button.btn-type2.blue` | `cloud/projectmember/save.html:187` |
+| 팝업 저장(하단) | `popup-foot` | `btn-type2`(다크에서 흰 버튼, 38곳 — `monitoring/vmManagerManagement/save.html`) 또는 `btn-type2 blue`(26곳 — `cloud/projectmember/save.html:187`). 디자인 기준 화면의 팝업과 같게 쓰고, 기준 팝업이 없으면 사용자와 정한다 | `layout_final/popup_layout` 화면 130개 집계(2026-10-14) |
 
 - 이벤트는 ready에서 한 번만 연결한다. 같은 버튼에 `onclick` 속성을 함께 쓰지 않는다([공통 작성 순서](../cases/screen/new-screen.md)).
 - `btn-type5` 버튼 사이 세로 구분선과 `small` 버튼의 고정 폭은 기본 디자인이다. 지우거나 바꾸지 않는다.

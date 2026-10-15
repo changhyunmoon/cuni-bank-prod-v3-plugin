@@ -42,6 +42,8 @@
 | 사용할 값이 미등록·미확인 | [display-value/temporary-value.md](cases/display-value/temporary-value.md) | display-values |
 | 작업 종료 시 값 등록 안내 (Admin / User) | [registration-admin.md](cases/display-value/registration-admin.md) / [registration-user.md](cases/display-value/registration-user.md) | display-values |
 | 등록한 값이 화면에 반영되지 않음 | [display-value/cache-refresh.md](cases/display-value/cache-refresh.md) | [flows/dictionary-management](reference/flows/dictionary-management.md) |
+| 승인된 시안을 구현 설계로 옮김, 화면 요청·응답 필드 이름 결정 | [backend/screen-api-contract.md](cases/backend/screen-api-contract.md) | [datatables-contract](reference/datatables-contract.md), [backend-calls](reference/backend-calls.md) |
+| 포탈 화면 URL·데이터 엔드포인트, Proxy 메서드·`application-msa.yml` 키 추가 | [backend/portal-controller-proxy.md](cases/backend/portal-controller-proxy.md) | backend-calls, [configuration](foundation/configuration.md) |
 | 포탈에서 백엔드 API 호출 추가 | — (reference만) | [backend-calls](reference/backend-calls.md) |
 | cmp에 새 REST API 추가·계약 변경 | [backend/cmp-new-api.md](cases/backend/cmp-new-api.md) | backend-calls, [data-access](reference/data-access.md) |
 | 새 DB 조회·저장 코드 (기술 선택) | [db/access-selection.md](cases/db/access-selection.md) → [jpa](cases/db/jpa.md) / [querydsl](cases/db/querydsl.md) / [mybatis](cases/db/mybatis.md) | data-access |

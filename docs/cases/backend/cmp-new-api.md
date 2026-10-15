@@ -27,7 +27,7 @@
 
 ## 오류 처리
 
-- Controller는 개별 try/catch로 원인 예외를 잡아 `BaseException(message, param.., cause)`로 다시 던진다. 메시지는 SLF4J 스타일 `{}` 플레이스홀더를 쓴다.
+- 참고 기능의 방식을 따른다. 관찰된 방식은 저장·변경 메서드에서 try/catch로 원인 예외를 잡아 `BaseException(message, param.., cause)`로 다시 던지는 것이며(예: `cmp/controller/VmManagerController.java`의 `/save`), 목록 조회는 try/catch 없이 둔다. 메시지는 SLF4J 스타일 `{}` 플레이스홀더를 쓴다.
 - `GlobalExceptionHandler`가 `BaseException`과 그 외 `Exception`을 모두 잡아 HTTP 500 + `ResultData(success=false, description, exception=클래스명)`으로 응답한다.
 - 4xx로 구분되는 응답은 없다. 클라이언트 실패 판단은 HTTP status가 아니라 `ResultData.success`로 한다.
 

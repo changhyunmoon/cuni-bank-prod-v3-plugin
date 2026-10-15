@@ -23,7 +23,7 @@
 ## 실제 코드에서 확인한 패턴
 
 - `DictionaryService`: JPA로 저장하고, `DictionarySupport`의 QueryDSL로 목록·상세·조건 삭제를 처리한다.
-- `DataMonitoringService`: 테이블 종류를 허용 목록으로 분기하고 기존 Support에서 조회한다.
+- `DataMonitoringService`(cmp `feature/cloud-data-monitoring-v5` 브랜치만, `development`에는 없음): 선택한 테이블 종류에 맞는 기존 Support(`VmSupport` 등)로 분기해 조회한다.
 - `AwsEc2UsgDao`: MyBatis XML로 기간별 사용량을 집계한다.
 - batch의 `BatchSampleDao`: SqlSessionTemplate으로 XML의 조회·일괄 저장을 실행한다.
 - interface의 `ApprCntMapper`: `@Mapper` 인터페이스를 사용한다. DAO 클래스 패턴과 구분한다.
@@ -37,6 +37,6 @@
 - admin·user에는 새 DB 접근을 추가하지 않고 백엔드 API를 호출한다.
 - 새 기술을 추가하거나 기존 방식을 바꿀 때는 이유와 영향 범위를 작업 결과에 남긴다.
 
-근거: `cmp:src/main/java/kr/datasolution/cuni/basic/service/DictionaryService.java`, `datamonitoring/service/DataMonitoringService.java`, `cmp/repository/AwsEc2UsgDao.java`; batch·interface는 각 모듈의 기존 DAO·Mapper.
+근거: `cmp:src/main/java/kr/datasolution/cuni/basic/service/DictionaryService.java`, `cmp/service/DataMonitoringService.java`(feature 브랜치, 커밋 c71af726), `cmp/repository/AwsEc2UsgDao.java`; batch·interface는 각 모듈의 기존 DAO·Mapper.
 - 상세: [JPA](jpa.md), [QueryDSL](querydsl.md), [MyBatis](mybatis.md).
 - 구현 순서·검증: [DB 코드 작성 절차](implementation.md).

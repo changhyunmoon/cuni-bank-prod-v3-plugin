@@ -27,6 +27,10 @@ evidence/
 - 승인 이력: 대상·버전, 사용자 응답의 짧은 인용/요약, 날짜, 대화 식별정보가 있으면 참조, 승인 범위.
 - 적용 문서와 소스 기준, 변경된 가정·결정, 남은 일, 다음 행동, 실행 제약.
 
+## 시안만 만든 작업을 이어 갈 때
+
+`standalone-prototype`으로 만든 시안을 구현까지 진행하려면 실행 모드를 `full-feature`로 바꾸고 progress에 `모드 전환: 날짜, 사용자 요청 요약`을 남긴다. 시안이 기준으로 삼은 자료(사용자 설계안 등)를 `requirements.md`로 정리해 **요구사항 승인**을 받은 뒤, 그 요구사항과 맞는 시안 버전의 **화면 승인**을 받는다. 시안 단계에서 받은 의견·승인 기록은 그대로 두고 새 승인으로 덮어쓰지 않는다.
+
 ## 전이 규칙
 
 | 현재 산출물 | 다음 단계 조건 |
@@ -48,11 +52,11 @@ evidence/
 
 승인 요청을 제출하기 직전에 대상 문서·`prototype.html`의 파일 목록과 SHA-256을 snapshot으로 보관한다. 외부 자산은 원본 경로·버전 또는 해시도 기록한다. 사용자 승인 응답은 이 snapshot ID에 연결하며, 승인 이후 내용을 바꾼 snapshot으로 과거 승인을 덮어쓰지 않는다. 해시는 대상의 동일성 증거이며 사용자 승인 자체를 증명하지 않는다.
 
-[evidence_snapshot.py](../scripts/evidence_snapshot.py)를 사용한다. 아래 경로는 실제 절대 경로로 치환하고 출력은 업무 프로젝트에 둔다.
+[evidence_snapshot.mjs](../scripts/evidence_snapshot.mjs)를 Node로 실행한다(Python 불필요). 아래 경로는 실제 절대 경로로 치환하고 출력은 업무 프로젝트에 둔다.
 
 ```text
-python <plugin>/skills/develop-screen-feature/scripts/evidence_snapshot.py record --root <business-root> --files <file1> <file2> --output <output>/evidence/snapshots/<id>.json
-python <plugin>/skills/develop-screen-feature/scripts/evidence_snapshot.py verify --snapshot <output>/evidence/snapshots/<id>.json
+node <plugin>/skills/develop-screen-feature/scripts/evidence_snapshot.mjs record --root <business-root> --files <file1> <file2> [--modules admin cmp] --output <output>/evidence/snapshots/<id>.json
+node <plugin>/skills/develop-screen-feature/scripts/evidence_snapshot.mjs verify --snapshot <output>/evidence/snapshots/<id>.json
 ```
 
 실행 전·후에도 입력 소스·설정·fixture 목록을 고정하고 모듈별 Git 루트, HEAD 커밋, dirty 상태와 변경 파일 해시를 저장한다. 업무 루트는 컨테이너이므로 단일 HEAD를 가정하지 않는다. untracked 파일, 삭제·이름 변경, 검증에 쓰인 미커밋 변경을 포함한다. 로그·보고서는 별도 실행 결과 snapshot으로 고정한다. 비밀값은 증거에 복사하지 않고 필요한 경우 해시 또는 비밀이 아닌 설정 식별자만 남긴다.

@@ -68,3 +68,10 @@
 - 업무 루트 `outputs/20261014-data-monitoring-cuni536/progress.md`의 v1~v5.8 수정 이력에서 사용자가 개발 표준에 맞추라고 고친 항목(검색 라벨·기간 선택 select, 검색 줄 요소 순서, 동작 버튼 줄·종류·순서·문구, 자체 모달·화면 CSS·비활성 모양, 다크 기본 테마, 디자인 기준 화면)을 추렸다.
 - 기준은 `monitoring/vmManagerManagement/list.html:514-560`, `task/list.html:609-613`, `common.js`의 `showPopup`·`closePopup`, `layout_final/popup_layout*`, `style.css`의 `.head_option`(`font-size: 0`)·`.btn-search`(아이콘)와 대조해 [목록 배치](../cases/screen/list-screen.md), [컴포넌트 표준](../reference/ui-components.md), [기간 검색](../cases/screen/period-search.md)에 기록했다.
 - 프로토타입 팝업의 `srcdoc` iframe 방식은 헤드리스 Chrome `file://`에서 상대 경로 CSS 적용과 부모 함수 호출을 확인했다. 업무 소스는 수정하지 않았다.
+
+## 2026-10-14 구현 설계 기준 확인
+
+- 포탈: admin `MonitoringController`(VM 담당자 관리 GET 화면·POST 데이터), `VmManagerClient`·`BaseProxy`, `CommonController.setResultMessage`, `CheckSessionInterceptor`(GET 요청만 메뉴 권한 검사), `application-msa.yml`(경로 키는 기본 문서, local 프로필은 기본 URL만)을 확인해 [포탈 Controller·Proxy](../cases/backend/portal-controller-proxy.md)에 기록했다.
+- 계약: cmp `VmManagerController`·`ApiController.createPageRequest`의 정렬 처리와 참고 화면 `columns.data`를 대조해 [시안의 서버 호출을 API 계약으로](../cases/backend/screen-api-contract.md)에 기록했다.
+- [DB 기술 선택](../cases/db/access-selection.md)의 `DataMonitoringService` 근거가 `development`에 없고 cmp `feature/cloud-data-monitoring-v5`(커밋 c71af726)에만 있음을 확인해 브랜치를 표시했다. 문서 근거는 기준 브랜치로 확인한다는 규칙을 [문서 반영 기준](document-rules.md)에 추가했다.
+- 업무 소스는 수정하지 않았고 실행 검증은 하지 않았다.

@@ -59,6 +59,7 @@ Claude Code에서 `/cuni-bank-v3-prod-plugin-v3:prototype-screen`으로 호출�
 - 실제로 쓸 공통 함수(`grid`·`exGrid`·`emptyGrid` 등, [DataTables 선택](../../docs/cases/table/table-setup.md))의 옵션을 `datatables.ex.js`에서 그대로 가져와 `$(selector).DataTable(...)`로 초기화한다. pageLength·pagingType·dom·lengthMenu·select·order·colResize 등 표시 옵션을 바꾸거나 빼지 않는다.
 - 서버 페이징 옵션만 `bServerSide: false`, `ajax` 대신 `data: <샘플 행>`으로 바꾼다. 샘플 행은 페이징·정렬·말줄임·빈 결과를 확인할 만큼 넣는다.
 - 화면에서 추가하는 옵션(`columns`, `columnDefs`, 선택 방식 등)은 실제 구현에서 공통 함수에 넘길 값과 같게 둔다.
+- 샘플 행 필드명(`columns.data`)과 `searchData()` 반환 키는 실제 API의 응답·요청 필드 이름으로 쓴다. 기존 API를 쓸 화면이면 그 API의 필드명, 새 API면 참고 API의 이름 방식(예: DB 컬럼명 소문자 `vmname`)을 따른다. 구현 설계가 이 이름을 그대로 계약으로 쓴다([시안의 서버 호출을 API 계약으로](../../docs/cases/backend/screen-api-contract.md)).
 
 ### 동작
 

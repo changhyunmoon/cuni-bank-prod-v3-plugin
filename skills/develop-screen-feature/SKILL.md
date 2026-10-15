@@ -40,14 +40,16 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 3. 구현 설계
 
-참고할 기존 기능(같은 유형의 화면 → 포탈 Controller → Proxy → CMP Controller/Service/Support)을 먼저 찾고, 그 구조를 그대로 복제하는 설계를 만든다. 문서는 선택한 케이스 중 [포탈 호출](../../docs/reference/backend-calls.md), [CMP 새 API](../../docs/cases/backend/cmp-new-api.md), [DB 기술 선택](../../docs/cases/db/access-selection.md), [데이터 접근](../../docs/reference/data-access.md)에서 필요한 것만 읽는다.
+시안만 만든(`standalone-prototype`) 작업에서 시작하면 [진행 기록 규칙](references/progress.md#시안만-만든-작업을-이어-갈-때)대로 모드를 바꾸고 요구사항·화면 승인을 먼저 받는다.
 
-`implementation-plan.md`에 다음만 쓴다.
+[설계 양식](references/implementation-plan-template.md)으로 `implementation-plan.md`를 쓴다. 순서는 다음과 같다.
 
-- 따라 할 참고 기능(파일 경로)과, 모듈별 생성·수정 파일·역할·요구사항 ID. 파일마다 필요한 이유를 한 줄 적는다.
-- 기존 API 재사용 여부와 이유. 신규 API는 경로·요청·응답만.
-- 참고 기능과 다르게 하는 부분이 있으면 그 이유.
-- 사용할 자료사전·코드사전·설정 값과 등록 여부(확인됨/미등록/미확인), 새 화면이면 등록할 메뉴. 등록 자체는 구현 범위가 아니며 5단계에서 안내한다.
+1. **작업 기준**: 모듈마다 현재 브랜치와 작업 관련 feature 브랜치·이전 커밋을 확인하고, 구현할 브랜치를 정한다. 이전 작업이 있으면 재사용·참고·무관을 판단해 적는다.
+2. **참고 기능 추적**: 디자인 기준 화면의 Controller부터 화면 → 포탈 Controller → Proxy → CMP Controller/Service/Support → DB를 따라가고, 그 구조를 그대로 복제하는 설계를 만든다. 문서는 선택한 케이스 중 [포탈 Controller·Proxy](../../docs/cases/backend/portal-controller-proxy.md), [포탈 호출](../../docs/reference/backend-calls.md), [CMP 새 API](../../docs/cases/backend/cmp-new-api.md), [DB 기술 선택](../../docs/cases/db/access-selection.md), [데이터 접근](../../docs/reference/data-access.md)에서 필요한 것만 읽는다.
+3. **서버 호출 대응표·API 계약**: 승인된 `prototype.html`의 `[프로토타입]` 함수를 [시안의 서버 호출을 API 계약으로](../../docs/cases/backend/screen-api-contract.md)대로 빠짐없이 API에 대응시킨다. 시안의 요청 키·응답 필드 이름이 계약이다. 기존 API와 이름이 다르면 시안을 고칠 대상으로 적는다.
+4. **파일·사용 값**: 모듈별 생성·수정 파일과 필요한 이유, 사용할 자료사전·코드사전·설정 값의 용도(표시/서버 로직)와 등록 여부, 새 화면이면 등록할 메뉴. 등록 자체는 구현 범위가 아니며 5단계에서 안내한다.
+5. **검증 계획**: 빌드, 테스트 추가 여부, 요구사항별 실제 서버 시나리오, 로컬 검증에 필요한 데이터·등록 값([서버 로직이 읽는 값](../../docs/cases/display-value/temporary-value.md#서버-로직이-읽는-코드설정-값)), 시안과 다시 비교할 화면.
+6. docs에 해당 케이스가 없는 부분은 [케이스 선택 규칙](references/doc-coverage.md#해당-케이스가-없을-때)대로 근거·위험을 따로 적고 사용자에게 확인받는다.
 
 [검증 에이전트 지침](references/verification.md)의 설계 검토를 거쳐 **구현 설계 승인**을 받는다. 승인 전 업무 소스·DB를 변경하지 않는다.
 
@@ -61,7 +63,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 5. 검증과 완료
 
-[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목을 하나씩 결과로 남긴다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다.
+[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목과 설계의 검증 계획 시나리오를 하나씩 결과로 남긴다. 구현한 화면은 로컬 서버에서 승인된 시안과 다크·화이트 두 테마로 나란히 비교한다(방법은 [prototype-screen의 실제 화면 비교](../prototype-screen/SKILL.md#실제-화면-비교) 4~8단계, 서버를 띄울 수 없으면 VPN 안내 후 대기). 남은 차이는 샘플 데이터와 실제 데이터의 차이뿐이어야 한다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다.
 
 완료 보고는 변경 파일, 검증 결과, 그리고 아래 **등록 안내**로 구성한다. 등록 안내는 항상 제공한다.
 

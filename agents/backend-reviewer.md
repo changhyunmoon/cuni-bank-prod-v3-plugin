@@ -20,6 +20,8 @@ model: inherit
 ## 설계 검토
 
 - 기존 CMP API의 실제 소스와 URL·메서드·요청/응답 필드·검색·정렬·페이징·권한을 확인한다. 이름 유사성만으로 재사용 가능하다고 하지 않는다.
+- 설계의 서버 호출 대응표를 승인된 `prototype.html`과 대조한다: `[프로토타입]` 함수가 모두 행으로 있는지, `searchData()` 반환 키·`columns.data`·샘플 필드가 API 요청·응답 필드와 같은지, 정렬 가능한 열의 `sortColumn`이 Support에서 처리되는지([시안의 서버 호출을 API 계약으로](../docs/cases/backend/screen-api-contract.md)).
+- POST 데이터 URL은 메뉴 권한 검사를 받지 않으므로([포탈 Controller·Proxy](../docs/cases/backend/portal-controller-proxy.md)) 권한·데이터 범위 검사 위치가 설계에 있는지 확인한다.
 - 신규 API가 필요한 근거, 기존 API 확장의 호환성, 화면부터 저장소까지 파일별 책임과 연결 누락을 확인한다.
 - 서버 검증·오류 계약·프로젝트/사용자 데이터 범위·상태 전이·트랜잭션과 DB 변경 계획을 확인한다.
 - 코드 식별값·자료사전·설정의 재사용/신규/DB 미확인 구분, 등록·캐시 반영 계획을 확인한다.

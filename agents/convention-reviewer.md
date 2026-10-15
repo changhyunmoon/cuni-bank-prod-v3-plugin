@@ -22,7 +22,7 @@ model: inherit
 검토할 때는 자신의 관점(표준 준수)만 판정하고 계약 정확성 판단은 backend-reviewer에 맡긴다.
 
 - 시안(`prototype.html` 한 파일, 요청 시에만): 참고 화면 선택, Admin/User frontend 기준의 레이아웃 구조·CSS 클래스·검색/버튼/표 배치. fragment 재사용·Thymeleaf 초안은 시안 단계 검토 대상이 아니며 구현 단계에서 확인한다.
-- 설계: 포탈 → Proxy → CMP 책임, DB 기술 선택 및 선택한 기술 규칙, 기존 API/컴포넌트 재사용, 메뉴·데이터 범위, 표시값·등록·캐시 설계.
+- 설계: [설계 양식](../skills/develop-screen-feature/references/implementation-plan-template.md)의 절이 모두 채워졌는지(해당 없음은 이유), 모듈별 구현 브랜치와 관련 feature 브랜치·이전 작업 판단, 참고 기능 추적표가 실제 파일:줄과 맞는지, 포탈 → Proxy → CMP 책임, DB 기술 선택 및 선택한 기술 규칙, 기존 API/컴포넌트 재사용, 메뉴·데이터 범위, 표시값·등록·캐시 설계.
 - 구현: 실제 파일 구조·명명·이벤트·공통 함수·응답 처리, 표 생성·검색·재조회·행 선택, 엑셀 내보내기의 현재 페이지·전체 행·표시 열 범위, Controller/Service/Repository 또는 Mapper 책임, 트랜잭션, 자료사전·코드·설정 조회와 임시값 해제. 임시값 잔존 여부는 `[임시값]`·`TEMP-DISPLAY-VALUE` 표식 검색으로 확인하고, 남은 항목마다 [등록 안내 가이드](../docs/cases/display-value/temporary-value.md) 형식의 등록 안내가 제공됐는지 확인한다.
 - 검증 근거: 빌드·테스트 문서의 실행 전제, 실제 테스트 건수·skip·미실행 표시, 업무 프로젝트 결과 폴더와 승인 버전 기록.
 
