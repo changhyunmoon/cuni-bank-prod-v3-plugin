@@ -38,4 +38,5 @@
 
 근거: `admin:src/main/java/kr/datasolution/cuni/common/cache/CacheManager.java`.
 화면·JS 근거: `admin:src/main/resources/templates/batchtask/list.html`, `admin:src/main/resources/static/js/common.js`의 `getCode`.
+- 쓰려는 키의 등록 여부는 [DB 조회 지도](../../reference/db-lookup.md)로 확인한다.
 - 관련: [등록](registration-admin.md), [미등록 값 개발](temporary-value.md).

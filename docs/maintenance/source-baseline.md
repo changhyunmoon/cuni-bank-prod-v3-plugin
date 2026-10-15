@@ -75,3 +75,12 @@
 - 계약: cmp `VmManagerController`·`ApiController.createPageRequest`의 정렬 처리와 참고 화면 `columns.data`를 대조해 [시안의 서버 호출을 API 계약으로](../cases/backend/screen-api-contract.md)에 기록했다.
 - [DB 기술 선택](../cases/db/access-selection.md)의 `DataMonitoringService` 근거가 `development`에 없고 cmp `feature/cloud-data-monitoring-v5`(커밋 c71af726)에만 있음을 확인해 브랜치를 표시했다. 문서 근거는 기준 브랜치로 확인한다는 규칙을 [문서 반영 기준](document-rules.md)에 추가했다.
 - 업무 소스는 수정하지 않았고 실행 검증은 하지 않았다.
+
+## 2026-10-15 DB 조회 기능 추가
+
+- 범위: cmp `basic/domain/`의 사전·코드·설정·메뉴·권한·알림 문구 엔티티와 `@Table` 이름으로 [DB 조회 지도](../reference/db-lookup.md)를 작성했다. 테이블 컬럼은 엔티티 필드 기준이다.
+- 조회 전용 계정으로 개발 DB `cuni_prg`에 접속했다. 접속 IP·계정은 저장소에 기록하지 않는다. 서버는 PostgreSQL 17이며 SSL만 허용하고 자체 서명 인증서를 쓴다. 사내망 전용이라 인증서 검증 없이 접속한다(사용자 결정).
+- 접속 확인: 계정은 읽기 전용 역할을 상속하며 public 테이블 420개 모두 SELECT 가능, 쓰기 가능 0개, 세션 `transaction_read_only = on`.
+- 엔티티와 DB 컬럼 대조: 사전·코드·메뉴·권한·알림 문구 테이블은 일치한다. 차이는 `configuration_tp.configurationidentity`(DB에만 있음)이다. 대표 조회 쿼리 4개를 실행해 확인했다.
+- 조회 스크립트의 쓰기 거부(다중 문장, 변경 CTE, SELECT INTO, 행 잠금, EXPLAIN ANALYZE, 부작용 함수)는 접속 전 단계에서 확인했다.
+

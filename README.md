@@ -9,6 +9,7 @@ CUNi 개발 표준을 따르는 화면·백엔드 개발 스킬과 독립 검증
 | 스킬 | `develop-screen-feature` | 요구사항 → HTML 시안 → 구현 설계 승인 후 CMP 백엔드까지 구현 |
 | 스킬 | `prototype-screen` | 서버 연동 없이 배치·디자인만 확인하는 `prototype.html` 한 파일 작성 |
 | 스킬 | `update-docs` | 텍스트 자료·업무 코드에서 필요한 정보를 추출해 반영 계획 승인 후 플러그인 docs 갱신 |
+| 스킬 | `query-db` | 업무 DB를 조회 전용으로 읽어 사전·코드·설정·메뉴·권한 등록 여부 확인. 쓰기가 필요하면 검토용 SQL만 작성 |
 | 스킬 | `update-plugin` | 설치된 플러그인을 최신 버전으로 수동 업데이트 (직접 호출할 때만 실행) |
 | 에이전트 | `screen-reviewer` | 요구사항 누락, 승인 화면과의 차이, 사용자 흐름 검토 (읽기 전용) |
 | 에이전트 | `convention-reviewer` | docs 개발 표준·기존 구조 준수 검토 (읽기 전용) |
@@ -102,7 +103,7 @@ claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3
 업무 루트에서 Claude Code를 열고 확인한다.
 
 1. `/plugin`의 설치 목록에 `cuni-bank-v3-prod-plugin-v3`가 활성 상태로 보인다.
-2. `/`를 입력하면 `/cuni-bank-v3-prod-plugin-v3:develop-screen-feature`, `/cuni-bank-v3-prod-plugin-v3:prototype-screen`, `/cuni-bank-v3-prod-plugin-v3:update-docs`, `/cuni-bank-v3-prod-plugin-v3:update-plugin`이 보인다.
+2. `/`를 입력하면 `/cuni-bank-v3-prod-plugin-v3:develop-screen-feature`, `/cuni-bank-v3-prod-plugin-v3:prototype-screen`, `/cuni-bank-v3-prod-plugin-v3:update-docs`, `/cuni-bank-v3-prod-plugin-v3:query-db`, `/cuni-bank-v3-prod-plugin-v3:update-plugin`이 보인다.
 3. `/agents` 목록에 `screen-reviewer`, `convention-reviewer`, `backend-reviewer`, `doc-extractor`가 보인다.
 
 ## 사용
@@ -118,6 +119,15 @@ claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3
 
 - 작업 산출물(요구사항·시안·설계·검증 기록)은 플러그인이 아닌 업무 루트의 `outputs/<YYYYMMDD-feature-slug>/`에 저장된다. 기준은 [진행 기록 규칙](skills/develop-screen-feature/references/progress.md)을 본다.
 - 커밋은 변경한 하위 저장소(admin·cmp 등)에서 각각 한다.
+
+### DB 조회 (`query-db`)
+
+Claude가 작업 중 업무 DB(PostgreSQL, 조회 전용 계정)를 직접 읽어 값 등록 여부와 메뉴·권한 구성을 확인한다. DB를 바꾸지 않으며, 등록·수정이 필요하면 사람이 검토하고 실행할 SQL 파일을 만들어 준다.
+
+- 최초 1회 Node.js로 `node <플러그인>/skills/query-db/scripts/db_query.mjs setup`을 실행해 `pg` 패키지를 `~/.claude/cuni-db`에 설치한다. `check`로 접속을 확인한다.
+- 사내망·VPN 연결이 필요하다. 접속 IP·포트·계정·비밀번호는 저장소에 없다. DB 담당자에게 받아 `~/.claude/settings.json`의 `env`에 `CUNI_DB_HOST`·`CUNI_DB_PORT`·`CUNI_DB_USER`·`CUNI_DB_PASSWORD`로 넣고 Claude Code를 재시작한다([설정 예](skills/query-db/SKILL.md#준비)).
+- 서버는 SSL만 허용하며 자체 서명 인증서라 `config/db.json`에 `ssl_verify: false`로 둔다(사내망 전용, 사용자 결정).
+- 조회할 테이블과 쿼리는 [DB 조회 지도](docs/reference/db-lookup.md)를 본다.
 
 ### docs 반영 (`update-docs`)
 

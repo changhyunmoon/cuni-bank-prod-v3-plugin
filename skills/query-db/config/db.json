@@ -1,0 +1,6 @@
+{
+  "_note": "비밀이 아닌 접속 옵션만 둔다. 접속 IP·포트·계정·비밀번호는 각자 PC의 환경변수 CUNI_DB_HOST/PORT/USER/PASSWORD로만 받는다(SKILL.md의 준비 참고).",
+  "database": "cuni_prg",
+  "ssl_verify": false,
+  "ssl_ca": ""
+}

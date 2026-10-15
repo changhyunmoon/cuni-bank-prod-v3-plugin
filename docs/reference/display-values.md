@@ -25,4 +25,5 @@
 근거: `admin:src/main/java/kr/datasolution/cuni/common/cache/CacheManager.java` 및 `cache/dto/`.
 테이블 근거: `cmp:src/main/java/kr/datasolution/cuni/basic/domain/`의 `Dictionary.java`, `Code.java`, `Configuration.java`.
 
+- DB의 실제 등록 여부는 [DB 조회 지도](db-lookup.md)의 쿼리로 확인한다.
 - 관련: [코드 사용법](../cases/display-value/usage.md), [등록 방법](../cases/display-value/registration-admin.md), [소스 기준](../maintenance/source-baseline.md).

@@ -28,6 +28,7 @@
 - `ENC(...)` 값은 Jasypt 복호화 설정과 함께 사용한다. 암호문 자체를 평문으로 바꾸어 문서에 적지 않는다.
 - 확인한 Admin 설정은 `PBEWithMD5AndDES`이며 JasyptConfiguration이 password·algorithm 속성을 읽는다.
 - 실제 암호화 비밀번호·JWT 키·DB 자격증명은 복사하지 않는다. 어떤 설정 키를 사용하는지만 기록한다.
+- AI 조회 전용 DB 계정도 저장소에 두지 않는다. 각자 PC의 환경변수 `CUNI_DB_*`로만 받는다. 업무 설정의 DB 계정을 대신 쓰지 않는다([query-db](../../skills/query-db/SKILL.md)).
 - 서비스 JWT의 서명 키 설정은 `api.auth.jwt.secret`이다. 전 환경의 실제 키 일치 여부는 이번 조사에서 검증하지 않았다.
 - TLS 검증을 생략하는 기존 구현은 호출 경로별로 확인한다. 공통 통신 규칙으로 확대 적용하지 않는다.
 

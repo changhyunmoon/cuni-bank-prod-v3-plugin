@@ -57,7 +57,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 선택한 케이스 문서의 구현 순서와 "복사하지 않을 기존 패턴"을 따른다. 실제 템플릿은 승인된 프로토타입의 본문 마크업과 script를 옮겨 참고 화면과 같은 레이아웃·fragment 구조로 작성한다. 옮길 때 `[프로토타입]` 서버 대체 함수와 샘플 데이터는 공통 함수(`grid`·`callAjax`·`saveData`·`showPopup` 등) 호출로, 직접 초기화한 DataTable은 같은 옵션의 공통 grid 호출로, `<template>` 팝업은 `popup_layout*`을 쓰는 별도 템플릿과 같은 크기의 `showPopup` 호출로 바꾸고, 인라인 언어·자원 보정은 지우며, 한글 문구는 자료사전 조회로, `코드사전:`·`자료사전:` 표시가 붙은 선택 목록·코드 표시는 `getCode`·`getDicList`·`getRenderCode` 조회로 바꾼다. 하드코딩한 옵션·코드 표시명을 남기지 않는다. 옮기는 과정에서 시안에 없던 클래스·style·요소를 더하지 않고, 완료 전에 [일관성 점검표](../../docs/cases/screen/consistency-check.md#점검표)로 실제 템플릿을 확인한다.
 
-자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다.
+값의 등록 여부와 새 화면의 메뉴·권한 구성은 [query-db](../query-db/SKILL.md)로 DB를 조회해 확인한다. 자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다. SQL이 필요하면 query-db의 검토용 SQL로만 제공한다.
 
 기능·흐름·API 계약·DB 구조의 중대한 변경이 필요하면 해당 단계만 재승인받는다. 운영 반영·배포·커밋은 요청이 있을 때만 한다.
 
@@ -78,6 +78,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 | 코드사전 | `/admin/codes/save` | 카테고리 / 이름(API·DB 식별값) / 언어별 값 / 순서 / 사용 여부 Y |
 | 설정 | `/admin/configurations/save` | 카테고리 / 이름 / 값 / 설명 |
 
+- 각 행은 DB 조회로 확인한 현재 상태(`확인됨 / 미등록 / 확인 필요`, 조회한 DB)를 함께 적는다. 사용자가 SQL을 원하면 [검토용 SQL](../query-db/SKILL.md#쓰기가-필요할-때) 파일 경로를 덧붙인다.
 - 등록 후 Admin 캐시 초기화(`/admin/settings/refreshCacheButton`)와 화면 재로드가 필요하다([캐시 반영](../../docs/cases/display-value/cache-refresh.md)).
 - 임시값을 넣은 곳은 `[임시값]` 표식 위치와 전환 방법(임시값 삭제, 아래 주석 해제)을 함께 적는다([등록 안내 형식](../../docs/cases/display-value/temporary-value.md)).
 - User 화면의 메뉴·사전 관리 경로는 대상 환경에서 확인해 안내한다([User 등록 가이드](../../docs/cases/display-value/registration-user.md)).

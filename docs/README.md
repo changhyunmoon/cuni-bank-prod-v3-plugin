@@ -41,6 +41,7 @@
 | 화면·코드에서 사전·코드·설정 값 사용 | [display-value/usage.md](cases/display-value/usage.md) | [display-values](reference/display-values.md) |
 | 사용할 값이 미등록·미확인 | [display-value/temporary-value.md](cases/display-value/temporary-value.md) | display-values |
 | 작업 종료 시 값 등록 안내 (Admin / User) | [registration-admin.md](cases/display-value/registration-admin.md) / [registration-user.md](cases/display-value/registration-user.md) | display-values |
+| 사전·코드·설정·메뉴·권한의 DB 등록 여부·실제 값 확인, 테이블 컬럼 확인 | — (reference만) + [query-db 스킬](../skills/query-db/SKILL.md) | [db-lookup](reference/db-lookup.md) |
 | 등록한 값이 화면에 반영되지 않음 | [display-value/cache-refresh.md](cases/display-value/cache-refresh.md) | [flows/dictionary-management](reference/flows/dictionary-management.md) |
 | 승인된 시안을 구현 설계로 옮김, 화면 요청·응답 필드 이름 결정 | [backend/screen-api-contract.md](cases/backend/screen-api-contract.md) | [datatables-contract](reference/datatables-contract.md), [backend-calls](reference/backend-calls.md) |
 | 포탈 화면 URL·데이터 엔드포인트, Proxy 메서드·`application-msa.yml` 키 추가 | [backend/portal-controller-proxy.md](cases/backend/portal-controller-proxy.md) | backend-calls, [configuration](foundation/configuration.md) |
@@ -65,6 +66,7 @@
 | [display-values.md](reference/display-values.md) | 자료사전·코드사전·설정 개념과 저장 위치 |
 | [backend-calls.md](reference/backend-calls.md) | 포탈 proxy·BaseProxy·ResultData |
 | [data-access.md](reference/data-access.md) | DB 변경 경로, 메뉴 역할·프로젝트 역할 |
+| [db-lookup.md](reference/db-lookup.md) | DB로 관리하는 값(사전·코드·설정·메뉴·권한)의 테이블·키와 조회 쿼리 |
 | [feature-map.md](reference/feature-map.md) | 기능별 화면→CMP→DB 연결 지도 |
 | [flows/workload-list.md](reference/flows/workload-list.md) · [flows/dictionary-management.md](reference/flows/dictionary-management.md) | 워크로드 목록·자료사전 관리의 실제 호출 흐름 |
 
