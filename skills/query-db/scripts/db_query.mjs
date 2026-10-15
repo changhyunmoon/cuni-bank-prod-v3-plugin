@@ -22,12 +22,18 @@ const LOCAL_PATH = join(SCRIPT_DIR, "..", "config", "db.local.json");
 const DEPS_DIR = join(homedir(), ".claude", "cuni-db");
 const DEFAULT_LIMIT = 200;
 const MAX_LIMIT = 5000;
-const TIMEOUT_MS = 15000;
+// 계정에 statement_timeout이 없을 때만 쓰는 문장 제한 시간. 계정 설정이 있으면 덮어쓰지 않는다.
+const FALLBACK_TIMEOUT = "15s";
+// 서버 응답이 없을 때 클라이언트가 기다리는 최대 시간.
+const CLIENT_TIMEOUT_MS = 20000;
 
-const ALLOWED_FIRST = new Set(["select", "with", "explain", "show", "table", "values"]);
-// 한 문장짜리 조회 안에서 변경이 일어나는 경로: 데이터 변경 CTE, SELECT INTO, 행 잠금.
-// DDL·세션 명령은 첫 키워드 검사와 READ ONLY 트랜잭션에서 막힌다. 컬럼 이름과 겹치는 단어는 넣지 않는다.
-const FORBIDDEN_WORDS = ["insert", "update", "delete", "merge", "truncate", "into"];
+// 사용자 지정 기준: SELECT·WITH로 시작하는 조회만 허용한다. EXPLAIN(ANALYZE 제외)은 SQL 점검용으로 허용한다.
+const ALLOWED_FIRST = new Set(["select", "with", "explain"]);
+// 문장 어디에 있어도 거부하는 단어: 데이터 변경(변경 CTE·SELECT INTO 포함)과 DDL·권한 변경.
+const FORBIDDEN_WORDS = [
+  "insert", "update", "delete", "merge", "truncate", "into",
+  "drop", "alter", "create", "grant", "revoke",
+];
 const LOCKING = /\bfor\s+(no\s+key\s+update|update|key\s+share|share)\b/;
 const FORBIDDEN_FUNCS = [
   "pg_terminate_backend", "pg_cancel_backend", "pg_reload_conf", "pg_rotate_logfile", "set_config",
@@ -35,7 +41,7 @@ const FORBIDDEN_FUNCS = [
   "lo_import", "lo_export", "lo_create", "lo_unlink", "dblink", "dblink_exec", "pg_advisory_lock",
   "pg_advisory_xact_lock", "pg_notify", "txid_current", "pg_current_xact_id",
 ];
-const SECRET_COLUMN = /pass(word|wd)?|secret|token|private|api_?key|credential|salt/i;
+const SECRET_COLUMN = /password|passwd|pwd|secret|token|private_?key|api_?key|credential|salt/i;
 
 function fail(message, extra = {}) {
   console.log(JSON.stringify({ ok: false, error: message, ...extra }, null, 2));
@@ -141,7 +147,7 @@ function checkReadOnly(sql) {
   const lower = masked.toLowerCase();
   const first = lower.match(/^[a-z]+/)?.[0];
   if (!ALLOWED_FIRST.has(first)) {
-    fail(`조회 문장만 실행합니다(SELECT/WITH/EXPLAIN/SHOW/TABLE/VALUES). 받은 문장: ${first ?? "?"}`, WRITE_HINT);
+    fail(`조회 문장만 실행합니다(SELECT/WITH, 점검용 EXPLAIN). 받은 문장: ${first ?? "?"}`, WRITE_HINT);
   }
   if (first === "explain" && /\banalyze\b/.test(lower)) fail("EXPLAIN ANALYZE는 실제로 실행되므로 거부합니다. EXPLAIN만 사용하세요.");
   for (const word of FORBIDDEN_WORDS) {
@@ -182,8 +188,7 @@ async function withClient(fn) {
   const client = new Client({
     ...cfg,
     connectionTimeoutMillis: 8000,
-    statement_timeout: TIMEOUT_MS,
-    query_timeout: TIMEOUT_MS + 2000,
+    query_timeout: CLIENT_TIMEOUT_MS,
     application_name: "claude-query-db",
   });
   try {
@@ -196,6 +201,8 @@ async function withClient(fn) {
   }
   try {
     await client.query("BEGIN READ ONLY");
+    const { statement_timeout: current } = (await client.query("SHOW statement_timeout")).rows[0];
+    if (current === "0") await client.query(`SET LOCAL statement_timeout = '${FALLBACK_TIMEOUT}'`);
     return await fn(client);
   } catch (e) {
     fail(e.message, { code: e.code, position: e.position });
@@ -243,8 +250,8 @@ function print(result, format) {
 }
 
 async function runSelect(client, sql, first, limit) {
-  // 행 수 상한: 조회 문장은 바깥에서 감싸 limit+1행만 가져온다. EXPLAIN·SHOW는 그대로 실행한다.
-  const wrap = first !== "explain" && first !== "show";
+  // 행 수 상한: 조회 문장은 바깥에서 감싸 limit+1행만 가져온다. EXPLAIN은 그대로 실행한다.
+  const wrap = first !== "explain";
   const text = wrap ? `SELECT * FROM (\n${sql}\n) AS _q LIMIT ${limit + 1}` : sql;
   const res = await client.query(text);
   const fields = res.fields.map((f) => f.name);

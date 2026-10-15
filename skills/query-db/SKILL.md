@@ -42,8 +42,8 @@ node <이 스킬>/scripts/db_query.mjs query "SELECT ... " --format table
 node <이 스킬>/scripts/db_query.mjs query --file <조회.sql> --limit 500
 ```
 
-- 한 번에 한 문장만 실행한다. 허용: `SELECT / WITH / EXPLAIN / SHOW / TABLE / VALUES`. `EXPLAIN ANALYZE`, `FOR UPDATE`, 쓰기 키워드·부작용 함수는 거부된다.
-- 세션은 `BEGIN READ ONLY`로 열고 끝나면 `ROLLBACK`한다. 문장 제한 시간은 15초, 기본 200행(상한 5000)이다. `truncated: true`면 조건을 좁힌다.
+- 한 번에 한 문장만 실행한다. `SELECT`·`WITH`로 시작하는 조회만 허용하고, SQL 점검용 `EXPLAIN`(ANALYZE 제외)만 예외로 둔다. `INSERT`·`UPDATE`·`DELETE`·`MERGE`·`TRUNCATE`·`INTO`·`DROP`·`ALTER`·`CREATE`·`GRANT`·`REVOKE`가 문장 어디에든 있으면 거부하고, `EXPLAIN ANALYZE`, `FOR UPDATE`, 부작용 함수도 거부한다. 이 단어가 컬럼 이름이면 큰따옴표로 감싼다.
+- 세션은 `BEGIN READ ONLY`로 열고 끝나면 `ROLLBACK`한다. 문장 제한 시간은 계정 설정(`statement_timeout`)을 따르고, 계정에 없을 때만 15초를 쓴다. 결과는 `SELECT * FROM (<SQL>) LIMIT`으로 감싸 기본 200행(상한 5000)만 가져온다. `truncated: true`면 조건을 좁힌다.
 - 조회 값에 따옴표가 들어가면 `'`를 `''`로 바꾼다. 긴 SQL은 스크래치 폴더에 파일로 써서 `--file`로 넘긴다.
 - 결과 보고: 실행한 SQL, 조회한 DB, 결론(예: `확인됨 / 미등록`)을 짧게 적는다. 코드 근거와 DB 결과가 다르면 둘 다 적는다.
 
