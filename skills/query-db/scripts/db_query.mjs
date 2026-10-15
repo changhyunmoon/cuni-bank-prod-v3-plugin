@@ -6,7 +6,7 @@
 //       node db_query.mjs columns <테이블>           컬럼·PK 목록
 //       node db_query.mjs query "<SQL>" [--limit N] [--format json|table]
 //       node db_query.mjs query --file <sql 파일> [--limit N] [--format json|table]
-// 접속 값: IP·포트·계정·비밀번호는 환경변수 CUNI_DB_HOST/PORT/USER/PASSWORD로만 받는다(저장소에 두지 않는다).
+// 접속 값: IP·포트·계정·비밀번호는 환경변수 CUNI_DB_HOST/PORT/USER/PASSWORD → ../config/db.local.json(.gitignore 대상) 순으로 받는다.
 //          DB 이름·SSL 옵션은 환경변수 CUNI_DB_NAME/SSL_VERIFY/SSL_CA → ../config/db.json 순으로 사용한다.
 import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = join(SCRIPT_DIR, "..", "config", "db.json");
+const LOCAL_PATH = join(SCRIPT_DIR, "..", "config", "db.local.json");
 // 플러그인 설치 캐시는 업데이트할 때 바뀌므로 의존 패키지는 사용자 영역에 둔다.
 const DEPS_DIR = join(homedir(), ".claude", "cuni-db");
 const DEFAULT_LIMIT = 200;
@@ -42,21 +43,31 @@ function fail(message, extra = {}) {
 }
 
 function loadConfig() {
-  let file = {};
-  if (existsSync(CONFIG_PATH)) file = JSON.parse(readFileSync(CONFIG_PATH, "utf8"));
+  const file = readJson(CONFIG_PATH);
+  // 접속 비밀 정보는 커밋하지 않는 로컬 파일에만 둔다.
+  const local = readJson(LOCAL_PATH);
   const env = process.env;
   return {
-    host: env.CUNI_DB_HOST,
-    port: Number(env.CUNI_DB_PORT),
+    host: env.CUNI_DB_HOST || local.host,
+    port: Number(env.CUNI_DB_PORT || local.port),
     database: env.CUNI_DB_NAME || file.database,
-    user: env.CUNI_DB_USER,
-    password: env.CUNI_DB_PASSWORD,
+    user: env.CUNI_DB_USER || local.user,
+    password: env.CUNI_DB_PASSWORD || local.password,
     // 서버 pg_hba가 암호화 접속만 허용한다. ssl_verify가 true면 인증서를 검증하며, 사내 CA는 PEM 파일로 지정한다.
     ssl: sslOptions(env.CUNI_DB_SSL_CA || file.ssl_ca, (env.CUNI_DB_SSL_VERIFY ?? String(file.ssl_verify ?? true)) !== "false"),
   };
 }
 
 // ssl_verify=false는 사내망 전용 서버의 자체 서명 인증서를 쓰기 위한 사용자 결정이다(2026-10-15). 암호화는 유지한다.
+function readJson(path) {
+  if (!existsSync(path)) return {};
+  try {
+    return JSON.parse(readFileSync(path, "utf8"));
+  } catch (e) {
+    fail(`설정 파일을 읽지 못했습니다: ${path} (${e.message})`);
+  }
+}
+
 function sslOptions(caPath, verify) {
   if (!verify) return { rejectUnauthorized: false };
   if (!caPath) return true;
@@ -163,11 +174,11 @@ function maskSecrets(fields, rows) {
 async function withClient(fn) {
   const { Client } = loadPg();
   const cfg = loadConfig();
-  const missing = ["CUNI_DB_HOST", "CUNI_DB_PORT", "CUNI_DB_USER", "CUNI_DB_PASSWORD"].filter((k) => !process.env[k]);
-  if (missing.length || !cfg.database) {
-    fail("접속 환경변수가 없습니다. 사용자에게 값을 받아 ~/.claude/settings.json의 env에 설정해 달라고 요청한다. 값을 추측하거나 업무 설정에서 가져오지 않는다.", { missing, config: CONFIG_PATH });
+  const missing = ["host", "port", "user", "password", "database"].filter((k) => !cfg[k]);
+  if (missing.length) {
+    fail("접속 정보가 없습니다. config/db.local.example.json을 db.local.json으로 복사해 값을 채워 달라고 사용자에게 요청한다. 값을 추측하거나 업무 설정에서 가져오지 않는다.", { missing, local_config: LOCAL_PATH });
   }
-  if (!Number.isInteger(cfg.port)) fail("CUNI_DB_PORT는 숫자여야 합니다.");
+  if (!Number.isInteger(cfg.port)) fail("port는 숫자여야 합니다.");
   const client = new Client({
     ...cfg,
     connectionTimeoutMillis: 8000,

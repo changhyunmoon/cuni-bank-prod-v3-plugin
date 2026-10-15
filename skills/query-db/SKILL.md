@@ -23,12 +23,9 @@ node <이 스킬>/scripts/db_query.mjs setup   # 최초 1회: pg 패키지를 ~/
 node <이 스킬>/scripts/db_query.mjs check   # 접속 계정·DB·읽기 전용 여부·권한 확인
 ```
 
-- 접속 IP·포트·계정·비밀번호는 저장소에 두지 않는다. 각자 PC의 `~/.claude/settings.json`에 설정한다. 값은 DB 담당자에게 받는다.
-
-  ```json
-  { "env": { "CUNI_DB_HOST": "<IP>", "CUNI_DB_PORT": "<포트>", "CUNI_DB_USER": "<계정>", "CUNI_DB_PASSWORD": "<비밀번호>" } }
-  ```
-- `missing` 오류가 나면 사용자에게 위 설정을 요청하고 Claude Code를 다시 시작하게 한다. 값을 추측하거나 업무 설정·대화 기록에서 가져오지 않으며, 받은 값을 docs·SKILL·커밋에 적지 않는다.
+- 접속 IP·포트·계정·비밀번호는 `config/db.local.json`에 둔다. 이 파일은 `.gitignore` 대상이라 커밋되지 않는다. 없으면 `config/db.local.example.json`을 복사해 DB 담당자에게 받은 값을 채운다.
+- `missing` 오류가 나면 사용자에게 위 파일 작성을 요청한다. 값을 추측하거나 업무 설정·대화 기록에서 가져오지 않으며, 받은 값을 docs·SKILL·커밋에 적지 않는다. `db.local.json`을 `git add`하지 않는다.
+- 플러그인 업데이트로 설치 위치가 바뀌면 `db.local.json`도 새 위치에 있어야 한다. 로컬 폴더 마켓플레이스 설치는 클론의 파일이 함께 복사되고, GitHub로 설치했으면 새 설치 위치에 다시 만든다. 환경변수 `CUNI_DB_HOST/PORT/USER/PASSWORD`가 있으면 그 값을 먼저 쓴다.
 - DB 이름(`cuni_prg`)과 SSL 옵션은 `config/db.json`에 있고 환경변수 `CUNI_DB_NAME/SSL_VERIFY/SSL_CA`로 바꿀 수 있다.
 - 서버는 SSL 접속만 허용하고 자체 서명 인증서를 쓴다. 사내망 전용이라 사용자 결정으로 `ssl_verify: false`(암호화는 유지, 인증서 검증 생략)로 둔다. 검증하려면 `ssl_verify: true`와 `ssl_ca`(PEM 경로)를 지정한다.
 - `check`의 `table_privileges.writable`이 0이 아니면 조회를 멈추고 사용자에게 계정 권한 확인을 요청한다.

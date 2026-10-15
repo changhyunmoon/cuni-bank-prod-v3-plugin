@@ -1,0 +1,7 @@
+{
+  "_note": "이 파일을 같은 폴더에 db.local.json으로 복사하고 값을 채운다. db.local.json은 .gitignore 대상이라 커밋되지 않는다.",
+  "host": "<DB IP>",
+  "port": 5432,
+  "user": "<조회 전용 계정>",
+  "password": "<비밀번호>"
+}

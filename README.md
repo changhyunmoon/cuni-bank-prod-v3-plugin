@@ -125,7 +125,7 @@ claude --plugin-dir C:/workspace/cuni-bank-v3-prod-plugin-v3
 Claude가 작업 중 업무 DB(PostgreSQL, 조회 전용 계정)를 직접 읽어 값 등록 여부와 메뉴·권한 구성을 확인한다. DB를 바꾸지 않으며, 등록·수정이 필요하면 사람이 검토하고 실행할 SQL 파일을 만들어 준다.
 
 - 최초 1회 Node.js로 `node <플러그인>/skills/query-db/scripts/db_query.mjs setup`을 실행해 `pg` 패키지를 `~/.claude/cuni-db`에 설치한다. `check`로 접속을 확인한다.
-- 사내망·VPN 연결이 필요하다. 접속 IP·포트·계정·비밀번호는 저장소에 없다. DB 담당자에게 받아 `~/.claude/settings.json`의 `env`에 `CUNI_DB_HOST`·`CUNI_DB_PORT`·`CUNI_DB_USER`·`CUNI_DB_PASSWORD`로 넣고 Claude Code를 재시작한다([설정 예](skills/query-db/SKILL.md#준비)).
+- 사내망·VPN 연결이 필요하다. 접속 IP·포트·계정·비밀번호는 저장소에 없다. `skills/query-db/config/db.local.example.json`을 같은 폴더에 `db.local.json`으로 복사하고 DB 담당자에게 받은 값을 채운다. 이 파일은 `.gitignore` 대상이다([준비](skills/query-db/SKILL.md#준비)).
 - 서버는 SSL만 허용하며 자체 서명 인증서라 `config/db.json`에 `ssl_verify: false`로 둔다(사내망 전용, 사용자 결정).
 - 조회할 테이블과 쿼리는 [DB 조회 지도](docs/reference/db-lookup.md)를 본다.
 
