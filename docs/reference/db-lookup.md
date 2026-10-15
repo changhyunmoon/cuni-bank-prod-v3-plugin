@@ -21,6 +21,13 @@
 - 모든 설정성 테이블에 `...createdate / createoperator / createoperatorname / modifydate / modifyoperator / modifyoperatorname`과 예비 컬럼 `...reserved1~5`가 있다. 등록 SQL을 쓸 때 같은 종류의 기존 행 값을 따른다.
 - 엔티티에 `@Table`이 없는 테이블(예: `Project`)은 실제 이름을 `tables`로 찾는다. 스키마는 `check`·`tables` 결과로 확인한다.
 - 조회하지 않는 테이블·컬럼: `credential`, `users`, `activedirectory`, `managementserver`의 비밀번호·키·토큰. 사람을 찾을 때도 식별자·이름 등 필요한 컬럼만 고른다.
+- `configuration_tp`에는 `DB`·`SSO`·`LdapUrl`·`ActiveDirectory`·`API`·`K8sApi`·`VropsApi`·`ELK`·`TCP` 등 외부 접속 설정이 있다. 이 카테고리는 `configurationcategory`·`configurationname`만 조회하고 `configurationvalue`는 읽지 않는다.
+
+## 메뉴 구조
+
+- 트리: 최상위 `CUNI` 아래 `apm`(관리자)·`upm`(사용자). 메뉴 ID는 대체로 Admin `apm…`, User `upm…`로 시작하지만 예외가 있다(예: Admin 워크로드 목록 `upmWorkloadList`). 적용 대상은 ID가 아니라 `menusystem`으로 판단한다.
+- `menusystem`은 코드사전 `PortalComponent`(`AdminPortal`·`UserPortal`), `menuclassify`는 `MenuType`(`Menu`·`Button` 등)이다. `Button` 행은 화면 안 버튼 권한이다(예: `apmDictionaryAdd`).
+- 관리 화면(DB 메뉴 URL 확인): 메뉴관리 `/admin/menus/list`, 권한그룹별메뉴관리 `/admin/auth-menus/list`, 자료사전 `/admin/dictionaries/list`, 코드관리 `/admin/codes/list`, 포탈환경설정 `/admin/configurations/list`. 모두 `apmSystemManagement` 아래다.
 
 ## 대표 조회
 
@@ -28,6 +35,9 @@
 -- 자료사전 키 등록 여부 (언어별)
 SELECT dictionarylanguagecode, dictionarysettingvalue FROM dictionary_tp
 WHERE dictionarycategory = 'Title' AND dictionaryname = 'BatchTask';
+-- 화면 문구와 같은 기존 자료사전 키 찾기
+SELECT dictionarycategory, dictionaryname, dictionarysettingvalue FROM dictionary_tp
+WHERE dictionarylanguagecode = 'ko-KR' AND dictionarysettingvalue ILIKE '%<문구>%';
 -- 코드사전 선택 목록
 SELECT codename, codesettingvalue, codeorder, codeenableyn FROM code_tp
 WHERE codecategory = '<카테고리>' AND codelanguagecode = '<언어>' ORDER BY codeorder;
@@ -40,8 +50,17 @@ SELECT r.roleidentity, r.rolename FROM rolemenu_tp rm JOIN role_tp r ON r.roleid
 WHERE rm.rolemenuidentity = '<메뉴 ID>';
 ```
 
-- 확인한 값(2026-10-15, `cuni_prg`): 언어 코드 `ko-KR`·`en-US`·`zh-CN`, `menusystem`은 `AdminPortal`·`UserPortal`. 자료사전은 `ko-KR` 행이 다른 언어보다 많으므로 모든 키가 3개 언어로 있다고 가정하지 않는다. 대소문자까지 일치해야 한다([자료사전·코드사전·설정](display-values.md)).
-- 키가 없으면 `미등록`, 접속하지 못했으면 `확인 필요`로 둔다. 조회한 DB 이름을 함께 기록한다.
+- 대소문자까지 일치해야 한다([자료사전·코드사전·설정](display-values.md)).
+
+## 확인한 값
+
+2026-10-15, `cuni_prg` 기준이다. 이 DB는 개발 서버 DB를 dump한 조회 전용 사본이라(사용자 제공 정보) dump 이후의 등록·변경은 없다. 다른 환경도 같다고 가정하지 않는다.
+
+- 언어: 데이터의 언어 코드는 `ko-KR`·`en-US`·`zh-CN`이지만, 언어 코드사전 `Culture`는 `ko-KR`만 사용 여부 `Y`다. 자료사전 행은 `ko-KR` 2,318건, 다른 언어 각 1,062건이라 모든 키가 3개 언어로 있지 않다.
+- 규모: 자료사전 93개 카테고리, 코드사전 178개 카테고리.
+- 메뉴: `AdminPortal` 116개(버튼 6개 포함), `UserPortal` 161개.
+
+- 키가 없으면 `미등록(사본 기준)`, 접속하지 못했으면 `확인 필요`로 둔다. 로컬 Admin에서 새로 등록한 값의 반영은 로컬 화면으로 확인한다. 조회한 DB 이름을 함께 기록한다.
 - 등록·수정이 필요하면 직접 쓰지 않고 [query-db의 쓰기 절차](../../skills/query-db/SKILL.md#쓰기가-필요할-때)대로 검토용 SQL을 작성한다.
 
 - 관련: [자료사전·코드사전·설정](display-values.md), [DB 접근과 권한](data-access.md), [미등록 값](../cases/display-value/temporary-value.md), [소스 기준](../maintenance/source-baseline.md).

@@ -1,6 +1,6 @@
 # 코드에서 값 사용하기
 
-> 범위: Admin Thymeleaf·Java·JavaScript | 상태: 코드 확인 | 근거: 아래 소스
+> 범위: Admin Thymeleaf·Java·JavaScript | 상태: 코드 확인, 예시 키 DB 대조(`cuni_prg` 2026-10-15) | 근거: 아래 소스
 >
 > 언제 읽나: 화면·Java·JS에서 자료사전·코드사전·설정 값을 조회해 표시할 때 | 읽지 않는 경우: 값을 등록하는 절차(→ registration-admin.md)
 
@@ -38,5 +38,6 @@
 
 근거: `admin:src/main/java/kr/datasolution/cuni/common/cache/CacheManager.java`.
 화면·JS 근거: `admin:src/main/resources/templates/batchtask/list.html`, `admin:src/main/resources/static/js/common.js`의 `getCode`.
+- 위 예시 키(`Title / BatchTask`, `Term / Name`, `YesNo`, `SearchConditionHeader / AllStatus`)는 개발 DB 사본에 있다. `Title / BatchTask`는 `ko-KR` 값만 있다.
 - 쓰려는 키의 등록 여부는 [DB 조회 지도](../../reference/db-lookup.md)로 확인한다.
 - 관련: [등록](registration-admin.md), [미등록 값 개발](temporary-value.md).

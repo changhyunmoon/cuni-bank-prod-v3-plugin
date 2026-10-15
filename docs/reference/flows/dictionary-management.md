@@ -13,6 +13,8 @@ Admin 자료사전 화면은 Proxy를 통해 CMP의 조회·저장·삭제를 �
 | 등록·수정 | `settings/dictionary/save.html`, `/admin/dictionaries/save` | `saveDictionary(List<Map<...>>)` → `DictionaryClient.save` | `/basic/dictionaries/save` → `saveDictionary` |
 | 삭제 | 목록 화면, `/admin/dictionaries/delete` | `deleteDictionary` → `DictionaryClient.remove` | `/basic/dictionaries/delete` → `deleteDictionary` |
 
+- 메뉴(DB): 목록 `apmDictionary`(상위 `apmSystemManagement`, `/admin/dictionaries/list`), 등록 버튼 권한 `apmDictionaryAdd`(유형 `Button`, `/admin/dictionaries/save`).
+
 화면 진입은 같은 `/list`, `/detail`, `/save`의 GET이다. 양쪽 Controller 이름이 `DictionaryController`이므로 Admin `admin/controller/settings`와 CMP `basic/controller`를 구분한다.
 
 `DictionaryClient`는 `BaseProxy.postRestTemplate(basicUrl + 상대 경로, payload)`을 사용한다. 설정 키 `app.basic.dictionary-list/detail/save/delete`는 각각 `/dictionaries/list/detail/save/delete`이며 확인한 `app.basic.url`은 `/basic`으로 끝난다.

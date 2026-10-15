@@ -22,7 +22,7 @@
 
 | 구분 | 규칙 |
 |---|---|
-| 관찰 | 메뉴 권한 검사는 `CheckSessionInterceptor`가 **GET 요청**에만, 등록된 메뉴 URL과 같거나 그 URL로 시작할 때만 한다. POST 데이터 URL은 세션 존재만 확인한다. |
+| 관찰 | 메뉴 권한 검사는 `CheckSessionInterceptor`가 **GET 요청**에만, 등록된 메뉴 URL과 같거나 그 URL로 시작할 때만 한다. POST 데이터 URL은 세션 존재만 확인한다. 등록된 메뉴 URL은 `menu_tp.menuurl`이며, 같은 URL이 이미 있는지 [DB 조회](../../reference/db-lookup.md)로 확인한다. |
 | 지침 | 데이터 범위·권한이 필요한 조회·변경은 화면·메뉴 권한에 기대지 말고 CMP에서 검사하는지 설계에 적는다. |
 | 관찰 | 같은 Client 안에서 키 이름은 `<리소스>-<동작>` 케밥 표기(`vm-managers-list`)다. |
 | 관찰 | 화면 경로와 CMP 경로는 이름이 달라도 된다(`/monitoring/vm-manager-managements/list` → `/cmp/vm-managers/list`). |

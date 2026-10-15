@@ -1,6 +1,6 @@
 # Admin에서 자료사전·코드사전·설정 등록
 
-> 범위: Admin 관리 화면 | 상태: 코드 확인, 실행 미검증 | 근거: 아래 소스
+> 범위: Admin 관리 화면 | 상태: 코드 확인, 메뉴 URL·예시 값 DB 대조(`cuni_prg` 2026-10-15), 실행 미검증 | 근거: 아래 소스
 >
 > 언제 읽나: 작업 종료 시 Admin 관리 화면에서 사전·설정 값을 등록하는 방법을 안내할 때 | 읽지 않는 경우: 코드에서 값을 조회하는 방법(→ usage.md)
 
@@ -8,9 +8,9 @@
 
 | 종류 | 목록 경로 | 등록 화면 경로 |
 |---|---|---|
-| 자료사전 | `/admin/dictionaries/list` | `/admin/dictionaries/save` |
-| 코드사전 | `/admin/codes/list` | `/admin/codes/save` |
-| 설정 | `/admin/configurations/list` | `/admin/configurations/save` |
+| 자료사전 (시스템관리 > 자료사전) | `/admin/dictionaries/list` | `/admin/dictionaries/save` |
+| 코드사전 (시스템관리 > 코드관리) | `/admin/codes/list` | `/admin/codes/save` |
+| 설정 (시스템관리 > 포탈환경설정) | `/admin/configurations/list` | `/admin/configurations/save` |
 
 1. 목록에서 카테고리·이름·언어를 검색한다. 같은 의미와 용도의 기존 키를 우선 재사용한다. 안내 전에 에이전트가 [DB 조회](../../reference/db-lookup.md)로 기존 키를 먼저 찾아 함께 제시한다.
 2. 없으면 등록을 선택하고 아래 항목을 입력한다. 기존 항목 변경은 수정 화면을 사용한다.
@@ -24,8 +24,8 @@
 | 코드사전 | 카테고리, 이름, 언어별 값, 번역 여부, 참조명, 설명, 순서, 사용 여부 |
 | 설정 | 카테고리, 이름, 값, 설명; 언어별 입력·코드 사용 여부는 없음 |
 
-- 언어별 입력칸은 `getCode("Culture")`로 생성된다. 생성된 각 언어의 값은 폼에서 필수 입력이다.
-- 자료사전 예: `Title / ExampleResource / ko-KR → 자원 관리`. 예시이며 실제 등록 여부는 확인해야 한다.
+- 언어별 입력칸은 `getCode("Culture")`로 생성된다. 생성된 각 언어의 값은 폼에서 필수 입력이다. DB의 `Culture`는 `ko-KR`만 사용 여부 `Y`이므로(`en-US`·`zh-CN`은 `N`, `cuni_prg` 2026-10-15) 지금은 한국어 입력칸만 나올 것으로 보인다(화면 미확인). 다른 언어 행이 있는 키는 그 전에 등록된 값이다.
+- 자료사전 예: `Title / BatchTask / ko-KR → 배치관리`(DB 확인). 새 키는 등록 전에 같은 문구의 기존 키가 있는지 [DB 조회](../../reference/db-lookup.md#대표-조회)로 찾는다.
 - 코드의 이름은 API·DB의 식별값과 맞춘다. 예: `ExampleStatus / READY → 준비`.
 - 코드 목록에 표시하려면 사용 여부 `Y`로 등록한다. 참조명은 사용처에서 요구할 때 입력한다.
 - 번역 여부는 표시 차단 조건이 아니다. 자료사전에는 코드와 같은 사용 여부 필드가 없다.

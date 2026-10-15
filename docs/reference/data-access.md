@@ -17,9 +17,10 @@
 
 | 구분 | 연결 구조 | 주된 용도 |
 |---|---|---|
-| 포탈 메뉴 역할 | 사용자 → RoleMember → Role → RoleMenu → Menu | 로그인 후 메뉴 권한 목록 구성 |
-| 프로젝트 역할 | Project → ProjectMember → ProjectRole, ProjectRoleMatrix | 프로젝트 구성원·역할 정보와 외부 역할 매핑 |
+| 포탈 메뉴 역할 | 사용자 → RoleMember → Role → RoleMenu → Menu (`rolemember_tp`·`role_tp`·`rolemenu_tp`·`menu_tp`) | 로그인 후 메뉴 권한 목록 구성 |
+| 프로젝트 역할 | Project → ProjectMember → ProjectRole, ProjectRoleMatrix (`project`·`projectmember`·`projectrole`·`projectrolematrix`) | 프로젝트 구성원·역할 정보와 외부 역할 매핑 |
 
+- 개발 DB 사본(`cuni_prg` 2026-10-15)의 `rolemember_tp` 구분값(`rolememberclassifycode`)은 `user`뿐이다. 권한 그룹 이름은 중복될 수 있으므로(예: `파라미터 사용자` 2개) ID로 구분한다.
 - 메뉴 역할과 프로젝트 역할은 같은 체계가 아니다. 메뉴 접근 허용이 프로젝트 변경 허용을 뜻하지 않는다.
 - `ProjectMemberService.getThirdPartyRole()`에는 GitLab·TAS 등 외부 역할로 바꾸는 로직이 있다.
 - 역할 데이터나 조직 필드가 있다는 이유만으로 요청마다 소유권·조직 경계가 검사된다고 판단하지 않는다.

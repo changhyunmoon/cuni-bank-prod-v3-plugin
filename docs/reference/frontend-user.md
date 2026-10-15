@@ -28,7 +28,7 @@
 
 1. `layout:fragment="template"` 안에 script와 입력 표를 둔다. 독립 popup 레이아웃을 덧씌우지 않는다.
 2. 서버에서 받은 프로젝트·관리서버 식별자로 기존 정보를 읽고 입력·표시 상태를 준비한다. 필요한 조회 완료 전에는 검증·제출을 막는다.
-3. CPU·Memory 단위 선택은 코드사전을 사용한다. 비교할 때 같은 단위로 환산하고 빈 값·잘못된 값·허용 범위를 검증한다.
+3. CPU·Memory 단위 선택은 코드사전(`K8sCpuUnit`·`K8sMemUnit`, 서비스 신청 K8s 템플릿에서 사용)을 사용한다. 비교할 때 같은 단위로 환산하고 빈 값·잘못된 값·허용 범위를 검증한다.
 4. 네임스페이스 입력 표는 `emptyGrid`와 `select: false`를 사용한다. 실제 input checkbox 상태와 DataTables Select 상태를 혼용하지 않는다.
 5. 동적 행 이벤트는 표에 위임한다. 선택에 따라 입력을 활성화하고 해제하면 값을 초기화한다. 운영 생성 예시는 disabled 행을 전체 선택에서 제외한다.
 6. 부모가 호출하는 `validComponent()`에서 검증 성공 후 `componoentData`와 `taskData`를 구성하고 `true`를 반환한다. `componoentData`는 기존 계약의 실제 철자이므로 단독으로 이름을 바꾸지 않는다.

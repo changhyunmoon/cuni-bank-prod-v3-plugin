@@ -10,6 +10,7 @@
 |---|---|---|
 | 화면 | `k8s/workloadList.html`, `getList()`·`searchData()` | `cloud/k8sworkload/workloadList.html`, 같은 함수명 |
 | 포탈 URL | GET/POST `/user/workload-list/list` | GET/POST `/admin/workload-list/list` |
+| 메뉴(DB) | `upmWorkList`, 상위 `upmServiceStatus`, `UserPortal` | `upmWorkloadList`, 상위 `apmTask`, `AdminPortal` |
 | 포탈 Controller | `user/controller/k8sworkloadlist/K8sWorkloadListController`, GET `viewWorkloadList`, POST `getServiceStatusWorkloadList` | `admin/controller/k8s/K8sWorkloadListController`, GET `viewWorkloadList`, POST `getAdminWorkloadList` |
 | Proxy | `proxy/cmp/WorkloadClient.getServiceStatusWorkloadList` | `proxy/cmp/WorkloadClient.getAdminWorkloadList` |
 | 설정 키 | `app.cmp.k8s-service-status-workload-list` → `/workload/service-status/list` | `app.cmp.k8s-admin-workload-list` → `/workload/admin/list` |

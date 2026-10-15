@@ -25,10 +25,11 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 2. 대상 프로젝트의 CLAUDE.md와 적용되는 .claude/rules를 확인한다. [진행 기록 규칙](references/progress.md)에 따라 기존 작업을 재개하거나 결과 폴더를 만든다.
 3. 라우터의 케이스 트리거 표에서 요청에 해당하는 케이스 문서를 모두 고르고, [케이스 선택·기록 규칙](references/doc-coverage.md)대로 단계마다 확인·기록한다. 모든 문서를 일괄로 읽지 않는다.
 4. 문서와 실제 코드가 다르면 실제 코드의 기존 컨벤션을 우선하고 차이를 짧게 기록한다.
+5. 사전·코드·설정·메뉴·권한처럼 DB로 관리하는 값이 작업에 들어가면 [query-db](../query-db/SKILL.md)의 `check`로 접속을 확인하고 조회한 DB를 progress에 적는다. 이후 단계의 "DB 조회"는 이 스킬로 한다. 접속하지 못하면 출력의 안내를 사용자에게 전달하고, DB 확인이 필요한 판단은 `확인 필요`로 두고 진행한다.
 
 ## 1. 요구사항 구체화
 
-대상 모듈의 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md))과 [참고 화면](../../docs/reference/screen-references.md), 관련 기존 화면·API([기능별 연결 지도](../../docs/reference/feature-map.md))를 확인해 요청을 실현 가능한 형태로 정리한다. 엑셀 내려받기처럼 케이스 문서가 데이터 범위를 정하는 기능은 그 기준을 요구사항의 완료 조건에 반영한다. 기간 검색이 있으면 [기간 검색 가이드](../../docs/cases/screen/period-search.md)의 A. 날짜 / B. 날짜·시간 중 하나와 기본 기간을 요구사항에 정한다. 요청에 없으면 추천안을 붙여 사용자 결정 사항으로 둔다.
+대상 모듈의 frontend 기준([Admin](../../docs/reference/frontend-admin.md)/[User](../../docs/reference/frontend-user.md))과 [참고 화면](../../docs/reference/screen-references.md), 관련 기존 화면·API([기능별 연결 지도](../../docs/reference/feature-map.md))를 확인해 요청을 실현 가능한 형태로 정리한다. 엑셀 내려받기처럼 케이스 문서가 데이터 범위를 정하는 기능은 그 기준을 요구사항의 완료 조건에 반영한다. 기간 검색이 있으면 [기간 검색 가이드](../../docs/cases/screen/period-search.md)의 A. 날짜 / B. 날짜·시간 중 하나와 기본 기간을 요구사항에 정한다. 요청에 없으면 추천안을 붙여 사용자 결정 사항으로 둔다. 새 화면의 메뉴 위치(상위 메뉴·형제 메뉴의 표시 순서·URL 형식)와 선택 목록에 쓸 기존 코드사전 카테고리는 DB 조회 결과를 추천안의 근거로 쓴다.
 
 `requirements.md`에 대상 모듈·화면 URL, 요청한 검색·열·버튼·동작, 요구사항 ID(R-01…)와 완료 조건, 제외 범위, 사용자가 정해야 할 사항만 짧게 쓴다. 요청을 해석하며 채운 부분과 제안은 구분해 표시한다.
 
@@ -45,10 +46,10 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 [설계 양식](references/implementation-plan-template.md)으로 `implementation-plan.md`를 쓴다. 순서는 다음과 같다.
 
 1. **작업 기준**: 모듈마다 현재 브랜치와 작업 관련 feature 브랜치·이전 커밋을 확인하고, 구현할 브랜치를 정한다. 이전 작업이 있으면 재사용·참고·무관을 판단해 적는다.
-2. **참고 기능 추적**: 디자인 기준 화면의 Controller부터 화면 → 포탈 Controller → Proxy → CMP Controller/Service/Support → DB를 따라가고, 그 구조를 그대로 복제하는 설계를 만든다. 문서는 선택한 케이스 중 [포탈 Controller·Proxy](../../docs/cases/backend/portal-controller-proxy.md), [포탈 호출](../../docs/reference/backend-calls.md), [CMP 새 API](../../docs/cases/backend/cmp-new-api.md), [DB 기술 선택](../../docs/cases/db/access-selection.md), [데이터 접근](../../docs/reference/data-access.md)에서 필요한 것만 읽는다.
+2. **참고 기능 추적**: 디자인 기준 화면의 Controller부터 화면 → 포탈 Controller → Proxy → CMP Controller/Service/Support → DB를 따라가고, 그 구조를 그대로 복제하는 설계를 만든다. 문서는 선택한 케이스 중 [포탈 Controller·Proxy](../../docs/cases/backend/portal-controller-proxy.md), [포탈 호출](../../docs/reference/backend-calls.md), [CMP 새 API](../../docs/cases/backend/cmp-new-api.md), [DB 기술 선택](../../docs/cases/db/access-selection.md), [데이터 접근](../../docs/reference/data-access.md)에서 필요한 것만 읽는다. DB 계층은 엔티티만 보지 말고 query-db의 `columns`로 실제 테이블 컬럼을 확인하고 차이를 적는다.
 3. **서버 호출 대응표·API 계약**: 승인된 `prototype.html`의 `[프로토타입]` 함수를 [시안의 서버 호출을 API 계약으로](../../docs/cases/backend/screen-api-contract.md)대로 빠짐없이 API에 대응시킨다. 시안의 요청 키·응답 필드 이름이 계약이다. 기존 API와 이름이 다르면 시안을 고칠 대상으로 적는다.
-4. **파일·사용 값**: 모듈별 생성·수정 파일과 필요한 이유, 사용할 자료사전·코드사전·설정 값의 용도(표시/서버 로직)와 등록 여부, 새 화면이면 등록할 메뉴. 등록 자체는 구현 범위가 아니며 5단계에서 안내한다.
-5. **검증 계획**: 빌드, 테스트 추가 여부, 요구사항별 실제 서버 시나리오, 로컬 검증에 필요한 데이터·등록 값([서버 로직이 읽는 값](../../docs/cases/display-value/temporary-value.md#서버-로직이-읽는-코드설정-값)), 시안과 다시 비교할 화면.
+4. **파일·사용 값**: 모듈별 생성·수정 파일과 필요한 이유, 사용할 자료사전·코드사전·설정 값의 용도(표시/서버 로직)와 등록 여부, 새 화면이면 등록할 메뉴. 등록 여부는 DB 조회 결과로 채우고, 메뉴는 상위 메뉴 ID·표시 순서를 DB에서 확인해 적는다. 등록 자체는 구현 범위가 아니며 5단계에서 안내한다.
+5. **검증 계획**: 빌드, 테스트 추가 여부, 요구사항별 실제 서버 시나리오, 로컬 검증에 필요한 데이터·등록 값([서버 로직이 읽는 값](../../docs/cases/display-value/temporary-value.md#서버-로직이-읽는-코드설정-값))과 시나리오에 필요한 데이터가 DB에 있는지(조건별 건수) 조회한 결과, 시안과 다시 비교할 화면.
 6. docs에 해당 케이스가 없는 부분은 [케이스 선택 규칙](references/doc-coverage.md#해당-케이스가-없을-때)대로 근거·위험을 따로 적고 사용자에게 확인받는다.
 
 [검증 에이전트 지침](references/verification.md)의 설계 검토를 거쳐 **구현 설계 승인**을 받는다. 승인 전 업무 소스·DB를 변경하지 않는다.
@@ -57,13 +58,13 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 선택한 케이스 문서의 구현 순서와 "복사하지 않을 기존 패턴"을 따른다. 실제 템플릿은 승인된 프로토타입의 본문 마크업과 script를 옮겨 참고 화면과 같은 레이아웃·fragment 구조로 작성한다. 옮길 때 `[프로토타입]` 서버 대체 함수와 샘플 데이터는 공통 함수(`grid`·`callAjax`·`saveData`·`showPopup` 등) 호출로, 직접 초기화한 DataTable은 같은 옵션의 공통 grid 호출로, `<template>` 팝업은 `popup_layout*`을 쓰는 별도 템플릿과 같은 크기의 `showPopup` 호출로 바꾸고, 인라인 언어·자원 보정은 지우며, 한글 문구는 자료사전 조회로, `코드사전:`·`자료사전:` 표시가 붙은 선택 목록·코드 표시는 `getCode`·`getDicList`·`getRenderCode` 조회로 바꾼다. 하드코딩한 옵션·코드 표시명을 남기지 않는다. 옮기는 과정에서 시안에 없던 클래스·style·요소를 더하지 않고, 완료 전에 [일관성 점검표](../../docs/cases/screen/consistency-check.md#점검표)로 실제 템플릿을 확인한다.
 
-값의 등록 여부와 새 화면의 메뉴·권한 구성은 [query-db](../query-db/SKILL.md)로 DB를 조회해 확인한다. 자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다. SQL이 필요하면 query-db의 검토용 SQL로만 제공한다.
+값의 등록 여부와 새 화면의 메뉴·권한 구성은 [query-db](../query-db/SKILL.md)로 DB를 조회해 확인한다. 자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다. SQL이 필요하면 query-db의 검토용 SQL로만 제공한다. 새로 쓴 조회 SQL(MyBatis XML·네이티브 쿼리)은 파라미터를 예시 값으로 채워 query-db로 실행하거나 `EXPLAIN`해 컬럼·문법을 확인할 수 있다. 쓰기 SQL은 실행하지 않고 실제 서버 시나리오로 검증한다.
 
 기능·흐름·API 계약·DB 구조의 중대한 변경이 필요하면 해당 단계만 재승인받는다. 운영 반영·배포·커밋은 요청이 있을 때만 한다.
 
 ## 5. 검증과 완료
 
-[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목과 설계의 검증 계획 시나리오를 하나씩 결과로 남긴다. 구현한 화면은 로컬 서버에서 승인된 시안과 다크·화이트 두 테마로 나란히 비교한다(방법은 [prototype-screen의 실제 화면 비교](../prototype-screen/SKILL.md#실제-화면-비교) 4~8단계, 서버를 띄울 수 없으면 VPN 안내 후 대기). 남은 차이는 샘플 데이터와 실제 데이터의 차이뿐이어야 한다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다.
+[검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목과 설계의 검증 계획 시나리오를 하나씩 결과로 남긴다. 구현한 화면은 로컬 서버에서 승인된 시안과 다크·화이트 두 테마로 나란히 비교한다(방법은 [prototype-screen의 실제 화면 비교](../prototype-screen/SKILL.md#실제-화면-비교) 4~8단계, 서버를 띄울 수 없으면 VPN 안내 후 대기). 남은 차이는 샘플 데이터와 실제 데이터의 차이뿐이어야 한다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다. 사용자가 값을 등록했다고 하면 등록 결과는 로컬 화면 표시(캐시 초기화 후)로 확인한다. query-db는 개발 서버 DB의 사본을 읽으므로 새로 등록한 값이 보이지 않는다.
 
 완료 보고는 변경 파일, 검증 결과, 그리고 아래 **등록 안내**로 구성한다. 등록 안내는 항상 제공한다.
 
@@ -73,12 +74,12 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 | 구분 | 어디서 | 무엇을 |
 |---|---|---|
-| 메뉴 (새 화면) | Admin `/admin/menus`(메뉴 관리)에서 등록 → `/admin/auth-menus`(역할별 메뉴 권한)에서 사용할 역할에 연결 | 메뉴명, 상위 메뉴, 화면 URL(예: `/admin/<경로>/list`), 표시 순서·표시 여부. 등록 후 **재로그인**해야 메뉴·권한이 반영된다 |
-| 자료사전 | `/admin/dictionaries/save` | 카테고리 / 이름 / 언어별 값(등록 화면의 모든 언어 필수) / 순서, 사용하는 화면·위치 |
+| 메뉴 (새 화면) | Admin 시스템관리 > 메뉴관리(`/admin/menus/list`)에서 등록 → 권한그룹별메뉴관리(`/admin/auth-menus/list`)에서 사용할 권한 그룹에 연결 | 메뉴 ID, 메뉴명, 상위 메뉴 ID, 화면 URL(예: `/admin/<경로>/list`), 유형 `Menu`, 적용 대상(Admin 화면 `AdminPortal` / User 화면 `UserPortal`), 표시 순서·표시 여부. 등록 후 **재로그인**해야 메뉴·권한이 반영된다 |
+| 자료사전 | `/admin/dictionaries/save` | 카테고리 / 이름 / 언어별 값(등록 화면에 나오는 언어 모두 필수, [언어 사용 현황](../../docs/reference/db-lookup.md#확인한-값)) / 순서, 사용하는 화면·위치 |
 | 코드사전 | `/admin/codes/save` | 카테고리 / 이름(API·DB 식별값) / 언어별 값 / 순서 / 사용 여부 Y |
 | 설정 | `/admin/configurations/save` | 카테고리 / 이름 / 값 / 설명 |
 
 - 각 행은 DB 조회로 확인한 현재 상태(`확인됨 / 미등록 / 확인 필요`, 조회한 DB)를 함께 적는다. 사용자가 SQL을 원하면 [검토용 SQL](../query-db/SKILL.md#쓰기가-필요할-때) 파일 경로를 덧붙인다.
 - 등록 후 Admin 캐시 초기화(`/admin/settings/refreshCacheButton`)와 화면 재로드가 필요하다([캐시 반영](../../docs/cases/display-value/cache-refresh.md)).
 - 임시값을 넣은 곳은 `[임시값]` 표식 위치와 전환 방법(임시값 삭제, 아래 주석 해제)을 함께 적는다([등록 안내 형식](../../docs/cases/display-value/temporary-value.md)).
-- User 화면의 메뉴·사전 관리 경로는 대상 환경에서 확인해 안내한다([User 등록 가이드](../../docs/cases/display-value/registration-user.md)).
+- User 화면의 메뉴도 같은 Admin 메뉴관리에서 적용 대상 `UserPortal`로 등록하고, 사전 값은 [User 등록 가이드](../../docs/cases/display-value/registration-user.md)대로 등록·반영한다.

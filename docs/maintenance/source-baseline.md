@@ -79,8 +79,13 @@
 ## 2026-10-15 DB 조회 기능 추가
 
 - 범위: cmp `basic/domain/`의 사전·코드·설정·메뉴·권한·알림 문구 엔티티와 `@Table` 이름으로 [DB 조회 지도](../reference/db-lookup.md)를 작성했다. 테이블 컬럼은 엔티티 필드 기준이다.
-- 조회 전용 계정으로 개발 DB `cuni_prg`에 접속했다. 접속 IP·계정은 저장소에 기록하지 않는다. 서버는 PostgreSQL 17이며 SSL만 허용하고 자체 서명 인증서를 쓴다. 사내망 전용이라 인증서 검증 없이 접속한다(사용자 결정).
+- 조회 전용 계정으로 개발 DB 사본 `cuni_prg`(개발 서버 DB를 dump한 별도 VM의 DB)에 접속했다. 접속 IP·계정은 저장소에 기록하지 않는다. 서버는 PostgreSQL 17이며 SSL만 허용하고 자체 서명 인증서를 쓴다. 사내망 전용이라 인증서 검증 없이 접속한다(사용자 결정).
 - 접속 확인: 계정은 읽기 전용 역할을 상속하며 public 테이블 420개 모두 SELECT 가능, 쓰기 가능 0개, 세션 `transaction_read_only = on`.
 - 엔티티와 DB 컬럼 대조: 사전·코드·메뉴·권한·알림 문구 테이블은 일치한다. 차이는 `configuration_tp.configurationidentity`(DB에만 있음)이다. 대표 조회 쿼리 4개를 실행해 확인했다.
 - 조회 스크립트의 쓰기 거부(다중 문장, 변경 CTE, SELECT INTO, 행 잠금, EXPLAIN ANALYZE, 부작용 함수)는 접속 전 단계에서 확인했다.
 
+## 2026-10-15 docs의 DB 대조
+
+- 범위: docs의 예시 사전·코드 키, Admin 관리 화면 URL, 메뉴 트리·유형·적용 대상, 권한 그룹 구분값, 프로젝트 역할 테이블, 테마 코드, 설정 카테고리를 개발 DB 사본 `cuni_prg`로 조회해 대조했다(조회 전용, 값 변경 없음).
+- 고친 사실: Admin 메뉴관리·권한그룹별메뉴관리 URL을 `/admin/menus/list`·`/admin/auth-menus/list`로 수정, User 메뉴도 Admin 메뉴관리에서 `UserPortal`로 등록함을 추가, `Culture`는 `ko-KR`만 사용 중임을 추가, 자료사전 예시를 등록된 키로 교체.
+- 화면 렌더링(언어 입력칸 수, 테마 옵션 순서)은 DB 값과 코드로 추론했으며 브라우저로 확인하지 않았다. query-db가 읽는 DB는 개발 서버 DB를 dump한 사용자 전용 VM의 별도 DB이며 local 프로필 DB와 다르다(사용자 제공 정보). dump 시점은 기록되지 않았다.
