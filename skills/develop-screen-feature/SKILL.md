@@ -62,7 +62,7 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
    - **DB 접근 기술은 재사용 순서로 고른다**([선택 기준](../../docs/cases/db/access-selection.md)): ① 같은 테이블의 기존 Repository·Support·DAO → ② 기존 엔티티 + JPA·QueryDSL Support 추가 → ③ 대상 테이블이 실행 중에 정해지면 JPA 메타모델 + `PathBuilder` 또는 MyBatis([동적 조회](../../docs/cases/db/dynamic-metadata-query.md)) → ④ SQL 중심 집계·DB 함수는 MyBatis([공통 페이징 구조](../../docs/cases/db/mybatis.md)). 앞 단계를 쓰지 않는 이유와 탈락한 대안을 설계 9절에 적고, 승인 요청 때 사용자에게 함께 보인다.
    - 권한은 기존 구조(메뉴 권한은 GET 인터셉터)를 쓰고, 데이터 범위 검사가 필요한 경우만 CMP 검사 위치를 적는다. 실패 동작은 공통 실패 계약(예외 → HTTP 500 + `description` → 기본 onFailed / 업무 실패 → HTTP 200 + `success=false` → onSuccess 분기)으로 적는다.
 3. **서버 호출 대응표·API 계약**: 승인된 `prototype.html`의 `[프로토타입]` 함수를 [시안의 서버 호출을 API 계약으로](../../docs/cases/backend/screen-api-contract.md)대로 빠짐없이 API에 대응시킨다. 시안의 요청 키·응답 필드 이름이 계약이다. 기존 API와 이름이 다르면 시안을 고칠 대상으로 적는다.
-4. **파일·사용 값**: 모듈별 생성·수정 파일과 필요한 이유, 사용할 자료사전·코드사전·설정 값의 용도(표시/서버 로직)와 등록 여부, 새 화면이면 등록할 메뉴. 등록 여부는 DB 조회 결과로 채우고, 메뉴는 상위 메뉴 ID·표시 순서를 DB에서 확인해 적는다. 등록 자체는 구현 범위가 아니며 5단계에서 안내한다.
+4. **파일·사용 값**: 모듈별 생성·수정 파일과 필요한 이유, 사용할 자료사전·코드사전·설정 값의 용도(표시/서버 로직)와 등록 여부, 새 화면이면 등록할 메뉴. 등록 여부는 DB 조회 결과로 채우고, 메뉴는 상위 메뉴 ID·표시 순서를 DB에서 확인해 적는다. 등록 자체는 구현 범위가 아니며 6단계에서 안내한다.
 5. **검증 계획**: 빌드, 테스트 추가 여부, 요구사항별 실제 서버 시나리오, 로컬 검증에 필요한 데이터·등록 값([서버 로직이 읽는 값](../../docs/cases/display-value/temporary-value.md#서버-로직이-읽는-코드설정-값))과 시나리오에 필요한 데이터가 DB에 있는지(조건별 건수) 조회한 결과, 시안과 다시 비교할 화면.
 6. docs에 해당 케이스가 없는 부분은 [케이스 선택 규칙](references/doc-coverage.md#해당-케이스가-없을-때)대로 근거·위험을 따로 적고 사용자에게 확인받는다.
 
@@ -70,13 +70,17 @@ Claude Code 플러그인 스킬이다. `/cuni-bank-v3-prod-plugin-v3:develop-scr
 
 ## 4. 구현
 
-승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 선택한 케이스 문서의 구현 순서와 "복사하지 않을 기존 패턴"을 따른다. 실제 템플릿은 승인된 프로토타입의 본문 마크업과 script를 옮겨 참고 화면과 같은 레이아웃·fragment 구조로 작성한다. 옮길 때 `[프로토타입]` 서버 대체 함수와 샘플 데이터는 공통 함수(`grid`·`callAjax`·`saveData`·`showPopup` 등) 호출로, 직접 초기화한 DataTable은 같은 옵션의 공통 grid 호출로, `<template>` 팝업은 `popup_layout*`을 쓰는 별도 템플릿과 같은 크기의 `showPopup` 호출로 바꾸고, 인라인 언어·자원 보정은 지우며, 한글 문구는 자료사전 조회로, `코드사전:`·`자료사전:` 표시가 붙은 선택 목록·코드 표시는 `getCode`·`getDicList`·`getRenderCode` 조회로 바꾼다. 하드코딩한 옵션·코드 표시명을 남기지 않는다. 안내창(`$.alert`·`$.confirm`) 문구와 화면 날짜 표시 형식(`Format.Date`·`Format.DateTime`)도 자료사전으로 읽고, grid `pageLength`·`lengthMenu`·`language`와 `callAjax` 기본 실패 처리를 재정의하지 않는다([하드코딩 경계](../../docs/cases/display-value/hardcoding-boundary.md)). 옮기는 과정에서 시안에 없던 클래스·style·요소를 더하지 않고, 완료 전에 [일관성 점검표](../../docs/cases/screen/consistency-check.md#점검표)로 실제 템플릿을 확인한다.
+승인된 설계대로 구현한다. 설계에 없는 파일·계층을 추가하지 않는다. 선택한 케이스 문서의 구현 순서와 "복사하지 않을 기존 패턴"을 따른다. 실제 템플릿은 승인된 프로토타입의 본문 마크업과 script를 옮겨 참고 화면과 같은 레이아웃·fragment 구조로 작성한다. 옮길 때 `[프로토타입]` 서버 대체 함수와 샘플 데이터는 공통 함수(`grid`·`callAjax`·`saveData`·`showPopup` 등) 호출로, 직접 초기화한 DataTable은 같은 옵션의 공통 grid 호출로, `<template>` 팝업은 `popup_layout*`을 쓰는 별도 템플릿과 같은 크기의 `showPopup` 호출로 바꾸고, 인라인 언어·자원 보정은 지우며, 한글 문구는 자료사전 조회로, `코드사전:`·`자료사전:` 표시가 붙은 선택 목록·코드 표시는 `getCode`·`getDicList`·`getRenderCode` 조회로 바꾼다. 하드코딩한 옵션·코드 표시명을 남기지 않는다. 안내창(`$.alert`·`$.confirm`) 문구와 화면 날짜 표시 형식(`Format.Date`·`Format.DateTime`)도 자료사전으로 읽고, grid `pageLength`·`lengthMenu`·`language`와 `callAjax` 기본 실패 처리를 재정의하지 않는다([하드코딩 경계](../../docs/cases/display-value/hardcoding-boundary.md)). 옮기는 과정에서 시안에 없던 클래스·style·요소를 더하지 않는다.
 
 값의 등록 여부와 새 화면의 메뉴·권한 구성은 [query-db](../query-db/SKILL.md)로 DB를 조회해 확인한다. 자료사전·코드사전·설정 값이 미등록이거나 미확인이면 [미등록 값 개발 가이드](../../docs/cases/display-value/temporary-value.md)대로 임시값을 넣고 바로 아래에 실제 조회 코드를 주석으로 남긴다. 메뉴·권한·사전 값을 DB에 직접 등록하거나 등록용 코드를 만들지 않는다. SQL이 필요하면 query-db의 검토용 SQL로만 제공한다. 새로 쓴 조회 SQL(MyBatis XML·네이티브 쿼리)은 파라미터를 예시 값으로 채워 query-db로 실행하거나 `EXPLAIN`해 컬럼·문법을 확인할 수 있다. 쓰기 SQL은 실행하지 않고 실제 서버 시나리오로 검증한다.
 
 기능·흐름·API 계약·DB 구조의 중대한 변경이 필요하면 해당 단계만 재승인받는다. 운영 반영·배포·커밋은 요청이 있을 때만 한다.
 
-## 5. 검증과 완료
+## 5. 자가 점검과 수정
+
+구현을 마치면 독립 검토 전에 [자가 점검](references/self-review.md)으로 직접 점검하고 고친다. 실제 `git diff`를 참고 기능 파일과 나란히 놓고 범위·기존 구조·공통 방식 재정의·하드코딩·시안 잔존·프로젝트 규칙을 확인하고, 위반은 참고 기능과 같은 모양으로 되돌리는 방향으로만 고친 뒤 영향받은 항목을 다시 확인한다. 위반이 남지 않으면 결과를 `verification.md`에 남기고 다음 단계로 간다. 고치려면 승인된 설계를 바꿔야 하는 경우는 해당 단계 재승인으로 되돌린다. 자가 점검은 독립 검토를 대신하지 않는다.
+
+## 6. 검증과 완료
 
 [검증 에이전트 지침](references/verification.md)에 따라 검증한다. 선택한 케이스 문서의 확인 항목과 설계의 검증 계획 시나리오를 하나씩 결과로 남긴다. 구현한 화면은 로컬 서버에서 승인된 시안과 다크·화이트 두 테마로 나란히 비교한다(방법은 [prototype-screen의 실제 화면 비교](../prototype-screen/SKILL.md#실제-화면-비교) 4~8단계, 서버를 띄울 수 없으면 VPN 안내 후 대기). 남은 차이는 샘플 데이터와 실제 데이터의 차이뿐이어야 한다. [빌드](../../docs/foundation/build-and-run.md)·[테스트](../../docs/foundation/testing.md) 기준으로 대상 모듈 빌드를 기본으로 확인하고, 실행하지 못한 검증은 이유와 함께 남긴다. 실제 통과 근거 없이 전체 완료로 표시하지 않는다. 로컬 실행은 cmp → admin 순서로 띄우고, 고친 템플릿이 실행 중 서버가 읽는 `build/resources/main`에 반영됐는지, 서버가 읽는 코드사전·설정을 바꿨으면 [캐시 초기화]를 했는지 확인한다([로컬 실행](../../docs/foundation/build-and-run.md), [화면 검증 시 주의](../../docs/foundation/testing.md)). 사용자가 값을 등록했다고 하면 등록 결과는 로컬 화면 표시(캐시 초기화 후)로 확인한다. query-db는 개발 서버 DB의 사본을 읽으므로 새로 등록한 값이 보이지 않는다.
 

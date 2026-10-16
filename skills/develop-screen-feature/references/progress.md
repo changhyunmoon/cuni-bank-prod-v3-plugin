@@ -21,7 +21,7 @@ evidence/
 
 - 작업 ID, 업무 루트, 대상 모듈, 원 요청 요약, 결과 폴더.
 - 실행 모드: full-feature / standalone-prototype / skill-evaluation. [공통 검증 계약](verification.md)의 모드별 기준을 따른다.
-- 현재 단계: requirements / prototype / design / implementation / verification / done.
+- 현재 단계: requirements / prototype / design / implementation / self-review / verification / done.
 - 상태: working / awaiting-approval / needs-input / verification-incomplete / complete.
 - 요구사항·시안·설계의 버전, 현재 승인 여부, 문서 링크.
 - 승인 이력: 대상·버전, 사용자 응답의 짧은 인용/요약, 날짜, 대화 식별정보가 있으면 참조, 승인 범위.
@@ -39,7 +39,8 @@ evidence/
 | 요구사항 | 해당 버전의 사용자 승인 → 시안 |
 | 시안 | 해당 버전의 사용자 승인 → 구현 설계 |
 | 구현 설계 | 해당 버전의 사용자 승인 → 업무 구현 |
-| 구현 | 독립 검토·실행 검증 및 수정 → 검증 결과 확정 |
+| 구현 | [자가 점검](self-review.md)으로 위반 수정 완료 → 독립 검토 |
+| 자가 점검 이후 | 독립 검토·실행 검증 및 수정 → 검증 결과 확정 |
 
 실제 사용자 응답을 근거로 승인 상태를 갱신한다. 침묵, 도구 성공, 에이전트 의견, 부분 수정 요청을 전체 승인으로 해석하지 않는다. 기존 대화에서 명확하게 승인된 내용은 기록하고 재요청하지 않는다. 승인 범위가 불명확한 경우 해당 부분만 확인한다.
 

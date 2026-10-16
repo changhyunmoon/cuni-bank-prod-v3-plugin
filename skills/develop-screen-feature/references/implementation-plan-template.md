@@ -68,4 +68,4 @@ docs에 해당 케이스가 없는 부분: <내용, 조사한 근거, 위험>
 - 3·4절: [시안의 서버 호출을 API 계약으로](../../../docs/cases/backend/screen-api-contract.md)를 따른다. 시안과 이름이 다르면 시안을 고칠 대상으로 9절에 적는다.
 - 4절: 페이징은 `createPageRequest` 또는 [MyBatis 공통 페이징](../../../docs/cases/db/mybatis.md), 실패는 [CMP 오류 처리](../../../docs/cases/backend/cmp-new-api.md), 메뉴 권한은 [포탈 Controller](../../../docs/cases/backend/portal-controller-proxy.md) 규칙을 기본으로 쓴다. 다르게 하면 9절에 적는다.
 - 6절: 화면 문구·옵션·날짜 표시 형식·운영 값은 모두 행으로 적는다. 코드 상수로 두는 값은 [하드코딩 경계](../../../docs/cases/display-value/hardcoding-boundary.md)의 "코드에 두는 것"에 해당할 때만이다.
-- 8절의 시나리오는 5단계 verification.md에서 그대로 결과를 채운다.
+- 8절의 시나리오는 6단계 verification.md에서 그대로 결과를 채운다.
